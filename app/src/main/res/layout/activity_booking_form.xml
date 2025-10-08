@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    tools:context=".BookingFormActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:title="@string/book_venue_title"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextColor="@android:color/black"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/venue_name"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="4dp">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/venue_location" android:textSize="14sp" android:textColor="#555555" app:drawableStartCompat="@drawable/ic_location" android:drawablePadding="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/venue_capacity" android:textSize="14sp" android:textColor="#555555" app:drawableStartCompat="@drawable/ic_person" android:layout_marginStart="16dp" android:drawablePadding="4dp"/>
+
+                        <Space android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/details_price_symbol" android:textSize="16sp" android:textColor="@android:color/black"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hardcoded_150" android:textSize="16sp" android:textStyle="bold" android:textColor="@android:color/black"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="/hr" android:textSize="14sp" android:textColor="#555555"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/section_date_time" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black" app:drawableStartCompat="@drawable/ic_calendar" android:drawablePadding="8dp" android:layout_marginBottom="16dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/event_date_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:id="@+id/text_event_date"
+                        style="@style/FormInputField"
+                        android:hint="@string/event_date_hint"
+                        app:drawableEndCompat="@drawable/ic_arrow_down"
+                        app:drawableStartCompat="@drawable/ic_calendar_line"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/start_time_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                            <TextView
+                                android:id="@+id/text_start_time"
+                                style="@style/FormInputField"
+                                android:hint="@string/select_start_time"
+                                app:drawableEndCompat="@drawable/ic_arrow_down"
+                                app:drawableStartCompat="@drawable/ic_time"
+                                android:gravity="center_vertical"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/end_time_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                            <TextView
+                                android:id="@+id/text_end_time"
+                                style="@style/FormInputField"
+                                android:hint="@string/select_end_time"
+                                app:drawableEndCompat="@drawable/ic_arrow_down"
+                                app:drawableStartCompat="@drawable/ic_time"
+                                android:gravity="center_vertical"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/section_event_details" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black" app:drawableStartCompat="@drawable/ic_group_people" android:drawablePadding="8dp" android:layout_marginBottom="16dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/event_type_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:id="@+id/text_venue_type_value"
+                        style="@style/FormInputField"
+                        android:text="@string/select_event_type"
+                        app:drawableEndCompat="@drawable/ic_arrow_down"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/estimated_guests_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                    <EditText
+                        style="@style/FormInputField"
+                        android:hint="@string/guests_hint"
+                        android:inputType="number"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/max_capacity_info" android:textSize="12sp" android:textColor="#888888" android:layout_marginBottom="16dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/special_requests_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:hint="@string/special_requests_hint"
+                        android:background="@drawable/form_field_background"
+                        android:padding="12dp"
+                        android:textSize="16sp"
+                        android:textColorHint="#888888"
+                        android:textColor="#333333"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Space android:layout_width="match_parent" android:layout_height="24dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        android:background="@android:color/white"
+        android:elevation="8dp">
+
+        <Button
+            android:id="@+id/btn_submit_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_request_button"
+            style="@style/BookNowButton"
+            android:backgroundTint="@color/green_primary"
+            android:paddingVertical="14dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/review_message"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"/>
+
+        <View android:layout_width="match_parent" android:layout_height="48dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

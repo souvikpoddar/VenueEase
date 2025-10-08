@@ -1,3 +1,87 @@
 <resources>
     <string name="app_name">VenueEase</string>
+
+    <string name="welcome_user">Welcome back, John Doe!</string>
+    <string name="welcome_subtitle">Find and book your perfect venue</string>
+    <string name="search_hint">Search venues by name or location...</string>
+    <string name="search_icon_desc">Search Icon</string>
+    <string name="filter_icon_desc">Filter Icon</string>
+
+    <string name="city_bangalore">Bangalore</string>
+    <string name="city_delhi">Delhi</string>
+    <string name="city_mumbai">Mumbai</string>
+    <string name="city_chennai">Chennai</string>
+    <string name="city_hyderabad">Hyderabad</string>
+    <string name="city_pune">Pune</string>
+    <string name="city_gurgaon">Gurgaon</string>
+    <string name="city_kolkata">Kolkata</string>
+
+    <string name="available_venues">Available Venues</string>
+    <string name="venue_count">8 venues</string>
+
+    <string name="filter_venues_title">Filter Venues</string>
+    <string name="close_button_desc">Close Filter</string>
+    <string name="filter_date_label">Date</string>
+    <string name="filter_date_hint">dd-mm-yyyy</string>
+    <string name="filter_type_label">Venue Type</string>
+    <string name="filter_type_hint">All Types</string>
+    <string name="filter_capacity_label">Minimum Capacity</string>
+    <string name="filter_capacity_hint">Any capacity</string>
+    <string name="filter_price_label">Max Price/Hour</string>
+    <string name="filter_price_hint">Any price</string>
+    <string name="clear_all_button">Clear All</string>
+    <string name="apply_filters_button">Apply Filters</string>
+
+    <string name="desc_venue_image">Venue Image Description</string>
+    <string name="hardcoded_available">Available</string>
+    <string name="desc_location_icon">Location Icon</string>
+    <string name="desc_guests_icon">Guests Icon</string>
+    <string name="details_price_symbol">₹</string>
+    <string name="hardcoded_150">150</string>
+    <string name="hardcoded_conference_hall">Conference Hall</string>
+
+    <string name="venue_details_title">Venue Details</string>
+    <string name="venue_name">Grand Conference Hall</string>
+    <string name="venue_location">Bangalore</string>
+    <string name="venue_capacity">Up to 200 guests</string>
+    <string name="price_per_hour">per hour</string>
+    <string name="about_venue_header">About this venue</string>
+    <string name="about_venue_body">A spacious and elegant conference hall perfect for corporate events, seminars, and large meetings.</string>
+    <string name="amenities_header">Amenities &amp; Features</string>
+    <string name="amenity_wifi">WiFi</string>
+    <string name="amenity_projector">Projector</string>
+    <string name="amenity_audio">Audio System</string>
+    <string name="amenity_ac">AC</string>
+
+    <string name="amenity_parking">Parking</string>
+    <string name="reviews_header">Reviews</string>
+    <string name="reviews_rating">4.8</string>
+    <string name="reviews_based_on">Based on 24 reviews</string>
+    <string name="book_venue_button">Book This Venue</string>
+
+    <!-- Booking Form Page Strings -->
+    <string name="book_venue_title">Book Venue</string>
+    <string name="venue_info_price">%1$s / hour</string>
+
+    <string name="section_date_time">Date &amp; Time</string>
+    <string name="event_date_label">Event Date *</string>
+    <string name="event_date_hint">Pick a date for your event</string>
+    <string name="start_time_label">Start Time *</string>
+    <string name="end_time_label">End Time *</string>
+    <string name="select_start_time">Select start time</string>
+    <string name="select_end_time">Select end time</string>
+
+    <string name="section_event_details">Event Details</string>
+    <string name="event_type_label">Event Type *</string>
+    <string name="select_event_type">Select event type</string>
+    <string name="estimated_guests_label">Estimated Number of Guests</string>
+    <string name="guests_hint">e.g., 50</string>
+    <string name="max_capacity_info">Maximum capacity: 200 guests</string>
+    <string name="special_requests_label">Special Requests</string>
+    <string name="special_requests_hint">Any special requirements or requests for your event...</string>
+
+    <string name="submit_request_button">Submit Booking Request</string>
+    <string name="review_message">Your booking request will be reviewed by the venue administrator</string>
+    <string name="rating_star_desc">Rating Star</string>
+
 </resources>

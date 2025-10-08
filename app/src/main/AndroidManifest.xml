@@ -11,15 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VenueEase">
+
+        <activity
+            android:name=".BookingFormActivity"
+            android:label="@string/book_venue_title"
+            android:exported="false"
+            android:theme="@style/Theme.VenueEase.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".VenueDetailsActivity"
+            android:label="@string/venue_details_title"
+            android:exported="false"
+            android:theme="@style/Theme.VenueEase.NoActionBar">
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
