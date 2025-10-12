@@ -1,3 +1,53 @@
 <resources>
-    <string name="app_name">VenueEase</string>
+    <string name="app_name">YourAppName</string>
+
+    <!-- Navigation Titles -->
+    <string name="title_venues">Venues</string>
+    <string name="title_bookings">Bookings</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Profile</string>
+
+    <!-- Booking Requests Page Text -->
+    <string name="booking_requests_title">Booking Requests</string>
+    <string name="booking_requests_subtitle">Review and manage venue booking requests</string>
+    <string name="stat_total_requests">Total Requests</string>
+    <string name="stat_pending_review">Pending Review</string>
+    <string name="stat_approved">Approved</string>
+    <string name="stat_confirmed">Confirmed</string>
+    <string name="filter_by_date">Filter by Date:</string>
+    <string name="date_placeholder">dd-mm-yyyy</string>
+    <string name="tab_pending">Pending (1)</string>
+    <string name="tab_approved_filter">Approved (1)</string>
+    <string name="tab_confirmed">Confirmed (0)</string>
+    <string name="tab_rejected">Rejected (0)</string>
+
+    <!-- First Card -->
+    <string name="card1_venue_title">Grand Conference Hall</string>
+    <string name="card1_request_from">Request from John Doe | john@example.com</string>
+    <string name="card_status_available">Available</string>
+    <string name="card1_booking_date">Sun, Dec 15, 2024</string>
+    <string name="card1_booking_time">09:00 - 17:00</string>
+    <string name="card1_booking_event">Corporate Seminar</string>
+    <string name="card1_booking_price">₹1200</string>
+    <string name="card_location_bangalore">Bangalore</string>
+    <string name="card1_capacity">Capacity: 200</string>
+    <string name="card1_special_requests">Special Requests:\nNeed additional microphones</string>
+    <string name="card1_user_notified">User has been notified and can now proceed with payment</string>
+    <string name="card1_submitted_date">Submitted on 01/12/2024</string>
+
+    <!-- Second Card -->
+    <string name="card2_venue_title">Riverside Banquet</string>
+    <string name="card2_request_from">Request from Jane Smith | jane@example.com</string>
+    <string name="card2_booking_date">Fri, Dec 20, 2024</string>
+    <string name="card2_booking_time">18:00 - 23:00</string>
+    <string name="card2_booking_event">Wedding Reception</string>
+    <string name="card2_booking_price">₹1000</string>
+    <string name="card_location_delhi">Delhi</string>
+    <string name="card2_capacity">Capacity: 150</string>
+    <string name="card2_special_requests">Special Requests:\nFloral decoration required</string>
+    <string name="button_reject">Reject</string>
+    <string name="button_approve">Approve &amp; Notify User</string>
+    <string name="card2_submitted_date">Submitted on 02/12/2024</string>
+    <string name="status_pending">Pending</string>
+
 </resources>
