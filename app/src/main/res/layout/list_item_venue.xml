@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_venue_photo"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic"
+            android:contentDescription="Venue Photo"/>
+
+        <TextView
+            android:id="@+id/tv_price_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_price_tag"
+            android:text="₹150/hr"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="12dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_venue_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Grand Conference Hall"
+            app:layout_constraintTop_toBottomOf="@id/iv_venue_photo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icon_edit"
+            android:layout_marginTop="12dp"
+            android:paddingStart="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:id="@+id/icon_location"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_location_pin"
+            app:layout_constraintTop_toBottomOf="@id/tv_venue_name"
+            app:layout_constraintStart_toStartOf="@id/tv_venue_name"
+            android:layout_marginTop="4dp"
+            android:contentDescription="Location Icon"/>
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Bangalore"
+            app:layout_constraintStart_toEndOf="@id/icon_location"
+            app:layout_constraintTop_toTopOf="@id/icon_location"
+            app:layout_constraintBottom_toBottomOf="@id/icon_location"
+            android:layout_marginStart="4dp"
+            android:textSize="13sp"/>
+
+        <ImageView
+            android:id="@+id/icon_capacity"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintStart_toEndOf="@id/tv_location"
+            app:layout_constraintTop_toTopOf="@id/icon_location"
+            app:layout_constraintBottom_toBottomOf="@id/icon_location"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Capacity Icon"/>
+
+        <TextView
+            android:id="@+id/tv_capacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="200 guests"
+            app:layout_constraintStart_toEndOf="@id/icon_capacity"
+            app:layout_constraintTop_toTopOf="@id/icon_capacity"
+            app:layout_constraintBottom_toBottomOf="@id/icon_capacity"
+            android:layout_marginStart="4dp"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/tv_type_amenities"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Conference Hall · 5 amenities"
+            app:layout_constraintTop_toBottomOf="@id/icon_location"
+            app:layout_constraintStart_toStartOf="@id/tv_venue_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="12dp"
+            android:textSize="13sp"
+            android:textColor="@android:color/darker_gray"/>
+
+        <ImageView
+            android:id="@+id/icon_delete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_venue_name"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Delete Venue"
+            app:tint="@android:color/darker_gray"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/icon_edit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toStartOf="@id/icon_delete"
+            app:layout_constraintTop_toTopOf="@id/tv_venue_name"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Edit Venue"
+            app:tint="@android:color/darker_gray"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
