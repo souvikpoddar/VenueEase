@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">VenueEase</string>
+
+    <string name="login_welcome">Welcome Back</string>
+    <string name="login_prompt">Sign in to your venue booking account</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_sign_up">Sign up</string>
 </resources>
