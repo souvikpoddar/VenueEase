@@ -19,4 +19,9 @@
     <string name="register_create_account">Create Account</string>
     <string name="register_already_account">Already have an account?</string>
     <string name="register_sign_in">Sign in</string>
+
+    <string name="reset_title">Reset Password</string>
+    <string name="reset_prompt">Enter your email to receive a reset link</string>
+    <string name="reset_send_link">Send Reset Link</string>
+    <string name="reset_back_to_sign_in">Back to Sign In</string>
 </resources>
