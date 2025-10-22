@@ -16,21 +16,21 @@
         android:text="Admin Dashboard"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_welcome_admin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="Welcome back, Admin! Manage your venues."
+        android:text="Welcome back, Admin User! Manage your venues and bookings"
         android:textColor="@android:color/darker_gray"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_admin_dashboard_title" />
+
     <TextView
         android:id="@+id/tv_venue_management_title"
         android:layout_width="0dp"
@@ -43,6 +43,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_welcome_admin" />
+
     <TextView
         android:id="@+id/tv_venue_management_subtitle"
         android:layout_width="0dp"
@@ -54,6 +55,7 @@
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_venue_management_title" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_venue"
         style="@style/Widget.MaterialComponents.Button.Icon"
@@ -61,9 +63,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="+ Add Venue"
+        app:iconGravity="textStart"
+        app:iconPadding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_venue_management_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_venue_management_title" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card_search"
         android:layout_width="0dp"
@@ -76,7 +81,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_venue_management_subtitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Search"
+                android:src="@drawable/ic_search" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Search venues by name or location..."
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+
+            <ImageView
+                android:id="@+id/icon_filter"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Filter"
+                android:src="@drawable/ic_filter" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <HorizontalScrollView
         android:id="@+id/scroll_location_chips"
         android:layout_width="0dp"
@@ -87,6 +124,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_search">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:chipSpacingHorizontal="8dp">
+
+            <com.google.android.material.chip.Chip android:text="Bangalore" />
+            <com.google.android.material.chip.Chip android:text="Delhi" />
+            <com.google.android.material.chip.Chip android:text="Mumbai" />
+            <com.google.android.material.chip.Chip android:text="Chennai" />
+            <com.google.android.material.chip.Chip android:text="Hyderabad" />
+            <com.google.android.material.chip.Chip android:text="Pune" />
+            <com.google.android.material.chip.Chip android:text="Gurgaon" />
+            <com.google.android.material.chip.Chip android:text="Kolkata" />
+        </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -94,11 +149,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingHorizontal="8dp"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/scroll_location_chips"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_location_chips"
         tools:listitem="@layout/list_item_venue" />
 
     <include
@@ -107,17 +161,24 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/scroll_location_chips"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/scroll_location_chips" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:menu="@menu/admin_nav_menu"
+        tools:itemIconSize="24dp"
+        tools:itemIconTint="@color/nav_item_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
