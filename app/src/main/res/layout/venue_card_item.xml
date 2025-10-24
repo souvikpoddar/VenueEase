@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white"
     android:layout_marginBottom="16dp">
 
     <LinearLayout
@@ -13,26 +14,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="180dp">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="#AAAAAA"
-                android:contentDescription="Venue Image"/>
+                android:src="#DDDDDD"
+                android:contentDescription="@string/desc_venue_image"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|start"
-                android:layout_margin="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/tag_available_background"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="Available"
+                android:text="@string/available_tag"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"/>
@@ -40,16 +41,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="12dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/tag_price_background"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="₹150/hr"
+                android:text="@string/price_per_hour_tag"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold"/>
-        </FrameLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,91 +62,79 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Grand Conference Hall"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:text="@string/venue_name"
                 android:textColor="@android:color/black"
-                android:layout_marginBottom="4dp"/>
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:orientation="horizontal">
 
-                <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_location" app:tint="#555555" android:contentDescription="Location"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bangalore" android:textSize="14sp" android:layout_marginStart="4dp" android:textColor="#555555"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="6dp"
+                    android:text="@string/venue_location"
+                    android:textColor="#555555"
+                    app:drawableStartCompat="@drawable/ic_location_pin"/>
 
-                <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_person" app:tint="#555555" android:layout_marginStart="16dp" android:contentDescription="Guests"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Up to 200 guests" android:textSize="14sp" android:layout_marginStart="4dp" android:textColor="#555555"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:drawablePadding="6dp"
+                    android:text="@string/venue_capacity"
+                    android:textColor="#555555"
+                    app:drawableStartCompat="@drawable/ic_people"/>
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Conference Hall"
-                style="@style/AmenityTag"
-                android:background="@drawable/city_tag_background"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/amenity_tag_background"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:layout_marginBottom="8dp"/>
+                android:text="@string/conference_hall_tag"
+                android:textColor="#333333"/>
 
             <LinearLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    style="@style/AmenityTag"
-                    android:text="WiFi"
-                    app:drawableStartCompat="@drawable/ic_wifi"/>
-
-                <TextView
-                    style="@style/AmenityTag"
-                    android:text="Projector"
-                    app:drawableStartCompat="@drawable/ic_projector"
-                    android:layout_marginStart="8dp"/>
-
-                <TextView
-                    style="@style/AmenityTag"
-                    android:text="Audio System"
-                    app:drawableStartCompat="@drawable/ic_audio"
-                    android:layout_marginStart="8dp"/>
-
-                <TextView
-                    style="@style/AmenityTag"
-                    android:text="+2 more"
-                    android:layout_marginStart="8dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+                <TextView style="@style/AmenityTag" android:text="@string/amenity_wifi" app:drawableStartCompat="@drawable/ic_wifi"/>
+                <TextView style="@style/AmenityTag" android:layout_marginStart="8dp" android:text="@string/amenity_projector" app:drawableStartCompat="@drawable/ic_projector"/>
+                <TextView style="@style/AmenityTag" android:layout_marginStart="8dp" android:text="@string/amenity_audio" app:drawableStartCompat="@drawable/ic_audio_system"/>
+                <TextView style="@style/AmenityTag" android:layout_marginStart="8dp" android:text="@string/plus_2_more"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
-
                 <Button
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="View Details"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:text="@string/view_details_button"
                     android:textColor="@color/blue_primary"
-                    android:backgroundTint="@android:color/transparent"
-                    android:paddingVertical="12dp"
                     android:layout_marginEnd="8dp"/>
-
                 <Button
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Book Now"
-                    style="@style/BookNowButton"/>
-
+                    android:text="@string/book_now_button"
+                    android:backgroundTint="@color/green_primary"
+                    app:cornerRadius="8dp"/>
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

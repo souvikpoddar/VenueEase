@@ -1,43 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5"
-    tools:context=".BookingFormActivity">
+    android:background="@android:color/white"
+    tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <!-- This is the top app bar with the title and back arrow -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:elevation="4dp"
-        app:title="@string/book_venue_title"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:titleTextColor="@android:color/black"/>
+        app:elevation="0dp">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/booking_form_title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- This makes the entire form scrollable -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp"
-        android:clipToPadding="false"
-        android:paddingBottom="24dp">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
+            <!-- Card 1: Venue Details Header -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/venue_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/venue_name_grand_hall"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/venue_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/venue_name"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/venue_location_bangalore"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/venue_guests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/venue_location"
+                        android:layout_marginTop="16dp"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/venue_capacity_200"
+                        android:textColor="#555555"
+                        app:drawableStartCompat="@drawable/ic_people" />
+
+                    <TextView
+                        android:id="@+id/venue_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/venue_guests"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/venue_price_150"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 2: Date & Time -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,177 +109,168 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/venue_name"
-                        android:textSize="18sp"
+                        android:text="@string/date_and_time"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/black"/>
+                        app:drawableStartCompat="@drawable/ic_calendar_today"
+                        android:drawablePadding="8dp"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="4dp">
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/venue_location" android:textSize="14sp" android:textColor="#555555" app:drawableStartCompat="@drawable/ic_location" android:drawablePadding="4dp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/venue_capacity" android:textSize="14sp" android:textColor="#555555" app:drawableStartCompat="@drawable/ic_person" android:layout_marginStart="16dp" android:drawablePadding="4dp"/>
-
-                        <Space android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/details_price_symbol" android:textSize="16sp" android:textColor="@android:color/black"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hardcoded_150" android:textSize="16sp" android:textStyle="bold" android:textColor="@android:color/black"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="/hr" android:textSize="14sp" android:textColor="#555555"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/section_date_time" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black" app:drawableStartCompat="@drawable/ic_calendar" android:drawablePadding="8dp" android:layout_marginBottom="16dp"/>
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/event_date_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
                     <TextView
-                        android:id="@+id/text_event_date"
-                        style="@style/FormInputField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/event_date_label" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:hint="@string/event_date_hint"
-                        app:drawableEndCompat="@drawable/ic_arrow_down"
-                        app:drawableStartCompat="@drawable/ic_calendar_line"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginBottom="16dp"/>
+                        app:startIconDrawable="@drawable/ic_calendar_today">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:orientation="horizontal">
 
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/start_time_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
-                            <TextView
-                                android:id="@+id/text_start_time"
-                                style="@style/FormInputField"
-                                android:hint="@string/select_start_time"
-                                app:drawableEndCompat="@drawable/ic_arrow_down"
-                                app:drawableStartCompat="@drawable/ic_time"
-                                android:gravity="center_vertical"
-                                android:clickable="true"
-                                android:focusable="true"/>
-                        </LinearLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:hint="@string/start_time_label">
+                            <AutoCompleteTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:text="@string/start_time_hint"/>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/end_time_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
-                            <TextView
-                                android:id="@+id/text_end_time"
-                                style="@style/FormInputField"
-                                android:hint="@string/select_end_time"
-                                app:drawableEndCompat="@drawable/ic_arrow_down"
-                                app:drawableStartCompat="@drawable/ic_time"
-                                android:gravity="center_vertical"
-                                android:clickable="true"
-                                android:focusable="true"/>
-                        </LinearLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:hint="@string/end_time_label">
+                            <AutoCompleteTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:text="@string/end_time_hint"/>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <!-- Card 3: Event Details -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
-
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/section_event_details" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black" app:drawableStartCompat="@drawable/ic_group_people" android:drawablePadding="8dp" android:layout_marginBottom="16dp"/>
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/event_type_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
                     <TextView
-                        android:id="@+id/text_venue_type_value"
-                        style="@style/FormInputField"
-                        android:text="@string/select_event_type"
-                        app:drawableEndCompat="@drawable/ic_arrow_down"
-                        android:gravity="center_vertical"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/estimated_guests_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
-                    <EditText
-                        style="@style/FormInputField"
-                        android:hint="@string/guests_hint"
-                        android:inputType="number"
-                        android:layout_marginBottom="4dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/max_capacity_info" android:textSize="12sp" android:textColor="#888888" android:layout_marginBottom="16dp"/>
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/special_requests_label" android:textColor="#555555" android:layout_marginBottom="4dp"/>
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:hint="@string/special_requests_hint"
-                        android:background="@drawable/form_field_background"
-                        android:padding="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_details"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textColorHint="#888888"
-                        android:textColor="#333333"
-                        android:gravity="top|start"
-                        android:inputType="textMultiLine"/>
-
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_people"
+                        android:drawablePadding="8dp"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/event_type_label">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:text="@string/event_type_hint"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/estimated_guests_label"
+                        app:helperText="@string/max_capacity_info">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="@string/estimated_guests_hint"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/special_requests_label">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:minLines="3"
+                            android:text="@string/special_requests_hint"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <Space android:layout_width="match_parent" android:layout_height="24dp"/>
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/btn_submit_request"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/green_primary"
+                android:paddingVertical="14dp"
+                android:text="@string/submit_booking_request"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                app:cornerRadius="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/booking_review_note"
+                android:textAlignment="center"
+                android:textColor="#666666"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
+    <!-- Bottom Navigation Bar (Optional, can be removed if not needed on this page) -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp"
-        android:background="@android:color/white"
-        android:elevation="8dp">
+        android:layout_gravity="bottom"
+        android:background="#F3F4FF"
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemIconTint="@color/nav_item_selector"
+        app:itemTextColor="@color/nav_item_selector"
+        app:labelVisibilityMode="labeled"/>
 
-        <Button
-            android:id="@+id/btn_submit_request"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/submit_request_button"
-            style="@style/BookNowButton"
-            android:backgroundTint="@color/green_primary"
-            android:paddingVertical="14dp"
-            android:layout_marginBottom="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/review_message"
-            android:textSize="12sp"
-            android:textColor="#888888"
-            android:layout_gravity="center_horizontal"
-            android:textAlignment="center"/>
-
-        <View android:layout_width="match_parent" android:layout_height="48dp"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

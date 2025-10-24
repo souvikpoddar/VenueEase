@@ -2,16 +2,19 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context=".MainActivity"> <!-- This line has been corrected -->
 
+    <!-- Header with Title and Close Button -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="24dp">
 
         <TextView
             android:id="@+id/filter_title"
@@ -25,132 +28,107 @@
 
         <ImageButton
             android:id="@+id/btn_close_filter"
-            android:layout_width="48dp"  android:layout_height="48dp" android:src="@drawable/ic_close"
-            app:tint="#555555"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_close"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/close_button_desc"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"/> </RelativeLayout>
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
-    <LinearLayout style="@style/FilterItemContainer">
-        <TextView
-            style="@style/FilterItemTitle"
-            android:text="@string/filter_date_label"
-            app:drawableStartCompat="@drawable/ic_calendar"
-            app:drawableTint="#333333"/>
-        <TextView
+    <!-- Date Filter -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/filter_date_label"
+        app:startIconDrawable="@drawable/ic_calendar">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_date_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"  android:text="@string/filter_date_hint"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="12dp"
-            app:drawableEndCompat="@drawable/ic_arrow_down"
-            app:drawableTint="#777777"
-            android:background="@drawable/filter_field_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
+            android:focusable="false"
+            android:text="@string/filter_date_hint"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout style="@style/FilterItemContainer">
-        <TextView
-            style="@style/FilterItemTitle"
-            android:text="@string/filter_type_label"
-            app:drawableStartCompat="@drawable/ic_group_people"
-            app:drawableTint="#333333"/>
-        <TextView
+    <!-- Venue Type Filter -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/filter_type_label"
+        app:startIconDrawable="@drawable/ic_group_people">
+
+        <AutoCompleteTextView
             android:id="@+id/text_venue_type_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"  android:text="@string/filter_type_hint"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="12dp"
-            app:drawableEndCompat="@drawable/ic_arrow_down"
-            app:drawableTint="#777777"
-            android:background="@drawable/filter_field_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
+            android:inputType="none"
+            android:text="@string/filter_type_hint"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout style="@style/FilterItemContainer">
-        <TextView
-            style="@style/FilterItemTitle"
-            android:text="@string/filter_capacity_label"
-            app:drawableStartCompat="@drawable/ic_person_2"
-            app:drawableTint="#333333"/>
-        <TextView
+    <!-- Minimum Capacity Filter -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/filter_capacity_label"
+        app:startIconDrawable="@drawable/ic_people">
+
+        <AutoCompleteTextView
             android:id="@+id/text_min_capacity_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"  android:text="@string/filter_capacity_hint"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="12dp"
-            app:drawableEndCompat="@drawable/ic_arrow_down"
-            app:drawableTint="#777777"
-            android:background="@drawable/filter_field_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
+            android:inputType="none"
+            android:text="@string/filter_capacity_hint"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout style="@style/FilterItemContainer">
-        <TextView
-            style="@style/FilterItemTitle"
-            android:text="@string/filter_price_label"
-            app:drawableStartCompat="@drawable/ic_dollar"
-            app:drawableTint="#333333"/>
-        <TextView
+    <!-- Max Price Filter -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:hint="@string/filter_price_label"
+        app:startIconDrawable="@drawable/ic_dollar">
+
+        <AutoCompleteTextView
             android:id="@+id/text_max_price_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"  android:text="@string/filter_price_hint"
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="12dp"
-            app:drawableEndCompat="@drawable/ic_arrow_down"
-            app:drawableTint="#777777"
-            android:background="@drawable/filter_field_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
+            android:inputType="none"
+            android:text="@string/filter_price_hint"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp"
-        style="?android:attr/buttonBarStyle"> <Button
-        android:id="@+id/btn_clear_all"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/clear_all_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:textColor="#3F51B5" android:backgroundTint="@android:color/transparent"
-        android:paddingVertical="12dp"
-        android:layout_marginEnd="8dp"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_clear_all"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/clear_all_button"
+            android:layout_marginEnd="8dp"/>
 
         <Button
             android:id="@+id/btn_apply_filters"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/apply_filters_button"
-            android:textColor="@android:color/white"
             android:backgroundTint="@color/blue_primary"
-            android:paddingVertical="12dp"
-            android:elevation="0dp"/>
+            app:cornerRadius="8dp"/>
     </LinearLayout>
 
 </LinearLayout>

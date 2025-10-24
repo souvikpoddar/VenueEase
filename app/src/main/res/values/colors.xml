@@ -2,8 +2,9 @@
 <resources>
     <color name="blue_primary">#007BFF</color>
     <color name="green_primary">#2ECC71</color>
-    <color name="city_tag_background">#E0E0E0</color>
-    <color name="city_tag_text_color">#333333</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
     <color name="nav_item_unselected">#999999</color>
-    <color name="nav_item_selected">#007BFF</color>
 </resources>
