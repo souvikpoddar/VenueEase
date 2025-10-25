@@ -42,4 +42,18 @@
     <string name="menu_bookings">Bookings</string>
     <string name="menu_notifications">Notifications</string>
     <string name="menu_profile">Profile</string>
+
+    <string name="add_new_venue_title">Add New Venue</string>
+    <string name="form_venue_name">Venue Name*</string>
+    <string name="form_location">Location*</string>
+    <string name="form_capacity">Capacity*</string>
+    <string name="form_venue_type">Venue Type*</string>
+    <string name="form_price">Price per Hour*</string>
+    <string name="form_description">Description</string>
+    <string name="form_amenities">Amenities (comma separated)</string>
+    <string name="form_photos">Venue Photos</string>
+    <string name="form_upload_prompt">Click to upload venue photos</string>
+    <string name="form_upload_supported">Supports: PNG, JPG, JPEG (Multiple files allowed)</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_add_venue">Add Venue</string>
 </resources>
