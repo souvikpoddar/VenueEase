@@ -165,5 +165,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected;
     }
 
+    public int deleteVenue(int venueId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Delete the row where the ID matches
+        int rowsAffected = db.delete(
+                TABLE_VENUES,
+                KEY_VENUE_ID + " = ?", // The WHERE clause
+                new String[]{String.valueOf(venueId)} // The argument for the WHERE clause
+        );
+
+        db.close();
+        return rowsAffected;
+    }
+
     // We will add getVenueDetails(), updateVenue(), and deleteVenue() methods here later.
 }

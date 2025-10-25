@@ -1,8 +1,12 @@
 package com.example.venueease;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,7 +83,44 @@ public class AdminDashboardActivity extends AppCompatActivity
     // 6. This is also from the VenueAdapter (for later)
     @Override
     public void onDeleteClicked(Venue venue) {
-        Toast.makeText(this, "Delete clicked for " + venue.getName(), Toast.LENGTH_SHORT).show();
-        // TODO: Show confirmation dialog, then call dbHelper.deleteVenue(venue.getId());
+        // 1. Build the confirmation dialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Delete Venue")
+                .setMessage("Are you sure you want to delete \"" + venue.getName() + "\"?\nThis action cannot be undone.")
+                .setCancelable(false) // User must choose an option
+
+                // 2. The "Delete" button (Positive)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Call the database helper to delete
+                        int rowsAffected = dbHelper.deleteVenue(venue.getId());
+
+                        if (rowsAffected > 0) {
+                            Toast.makeText(AdminDashboardActivity.this, "Venue deleted", Toast.LENGTH_SHORT).show();
+                            // Refresh the list
+                            loadVenuesFromDb();
+                        } else {
+                            Toast.makeText(AdminDashboardActivity.this, "Error deleting venue", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+
+                // 3. The "Cancel" button (Negative)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Just close the dialog
+                    }
+                })
+
+                // 4. Create the dialog
+                .create();
+
+        // 4. Show the dialog
+        dialog.show();
+
+        // 5. Get the button AFTER showing the dialog and set its color
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
     }
 }
