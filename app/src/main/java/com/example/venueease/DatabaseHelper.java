@@ -139,5 +139,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return venueList;
     }
 
+    public int updateVenue(Venue venue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Put all the new values
+        values.put(KEY_VENUE_NAME, venue.getName());
+        values.put(KEY_LOCATION, venue.getLocation());
+        values.put(KEY_CAPACITY, venue.getCapacity());
+        values.put(KEY_VENUE_TYPE, venue.getType());
+        values.put(KEY_PRICE_PER_HOUR, venue.getPrice());
+        values.put(KEY_DESCRIPTION, venue.getDescription());
+        values.put(KEY_AMENITIES, venue.getAmenities());
+        values.put(KEY_VENUE_PHOTOS, venue.getPhotoUri());
+
+        // Update the row where the ID matches
+        int rowsAffected = db.update(
+                TABLE_VENUES,
+                values,
+                KEY_VENUE_ID + " = ?", // The WHERE clause
+                new String[]{String.valueOf(venue.getId())} // The argument for the WHERE clause
+        );
+
+        db.close();
+        return rowsAffected;
+    }
+
     // We will add getVenueDetails(), updateVenue(), and deleteVenue() methods here later.
 }

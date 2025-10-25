@@ -3,21 +3,19 @@ package com.example.venueease;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager; // Import this
-import androidx.recyclerview.widget.RecyclerView; // Import this
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.ArrayList; // Import this
-import java.util.List; // Import this
-
-public class AdminDashboardActivity extends AppCompatActivity implements AddVenueFragment.VenueAddListener {
+// 1. Implement BOTH interfaces
+public class AdminDashboardActivity extends AppCompatActivity
+        implements AddVenueFragment.OnVenueDataChangedListener,
+        VenueAdapter.OnVenueActionListener {
 
     private MaterialButton btnAddVenue;
-
-    // 1. Declare RecyclerView, Adapter, List, and DB Helper
     private RecyclerView rvVenues;
     private VenueAdapter venueAdapter;
     private List<Venue> venueList;
@@ -28,63 +26,60 @@ public class AdminDashboardActivity extends AppCompatActivity implements AddVenu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        // 2. Initialize DB Helper
         dbHelper = new DatabaseHelper(this);
-
-        // Find views
         btnAddVenue = findViewById(R.id.btn_add_venue);
         rvVenues = findViewById(R.id.rv_venues);
 
-        // 3. Setup RecyclerView
         setupRecyclerView();
 
-        // Set click listener for Add Venue button
-        btnAddVenue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddVenueFragment addVenueFragment = new AddVenueFragment();
-                addVenueFragment.show(getSupportFragmentManager(), addVenueFragment.getTag());
-            }
+        // "Add Venue" button (opens fragment in "Add Mode")
+        btnAddVenue.setOnClickListener(v -> {
+            AddVenueFragment addVenueFragment = new AddVenueFragment();
+            // No arguments means "Add Mode"
+            addVenueFragment.show(getSupportFragmentManager(), addVenueFragment.getTag());
         });
 
-        // 4. Load the initial list of venues
         loadVenuesFromDb();
     }
 
     private void setupRecyclerView() {
-        // Initialize the list
         venueList = new ArrayList<>();
-
-        // Create the adapter
-        venueAdapter = new VenueAdapter(this, venueList);
-
-        // Set layout manager and adapter
+        // 2. Pass 'this' as the listener
+        venueAdapter = new VenueAdapter(this, venueList, this);
         rvVenues.setLayoutManager(new LinearLayoutManager(this));
         rvVenues.setAdapter(venueAdapter);
     }
 
-    /**
-     * Fetches all venues from the database and updates the RecyclerView.
-     */
     private void loadVenuesFromDb() {
-        // 5. Get the list from the database
         List<Venue> newVenues = dbHelper.getAllVenuesList();
-
-        // 6. Update the adapter's data
         venueAdapter.updateVenues(newVenues);
-
-        // TODO: Add a check here to show/hide a "No venues found" message
     }
 
-    /**
-     * This is the callback method from AddVenueFragment.VenueAddListener
-     * It's called after a new venue is successfully added to the DB.
-     */
+    // 3. This is the callback from the AddVenueFragment
     @Override
-    public void onVenueAdded() {
+    public void onDataChanged() {
         Toast.makeText(this, "Dashboard refreshing...", Toast.LENGTH_SHORT).show();
-
-        // 7. Reload the venues from the database
         loadVenuesFromDb();
+    }
+
+    // 4. This is the new callback from the VenueAdapter
+    @Override
+    public void onEditClicked(Venue venue) {
+        // Open the fragment in "Edit Mode"
+        AddVenueFragment editVenueFragment = new AddVenueFragment();
+
+        // 5. Create a bundle and pass the venue data
+        Bundle args = new Bundle();
+        args.putSerializable("venue_to_edit", venue);
+        editVenueFragment.setArguments(args);
+
+        editVenueFragment.show(getSupportFragmentManager(), editVenueFragment.getTag());
+    }
+
+    // 6. This is also from the VenueAdapter (for later)
+    @Override
+    public void onDeleteClicked(Venue venue) {
+        Toast.makeText(this, "Delete clicked for " + venue.getName(), Toast.LENGTH_SHORT).show();
+        // TODO: Show confirmation dialog, then call dbHelper.deleteVenue(venue.getId());
     }
 }

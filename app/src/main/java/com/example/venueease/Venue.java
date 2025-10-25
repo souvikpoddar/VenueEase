@@ -1,6 +1,8 @@
 package com.example.venueease;
 
-public class Venue {
+import java.io.Serializable;
+
+public class Venue implements Serializable {
 
     int id;
     String name;

@@ -20,67 +20,32 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
     private Context context;
     private List<Venue> venueList;
 
-    // (We will add listeners for edit/delete later)
-    // public interface OnVenueActionListener {
-    //     void onEdit(Venue venue);
-    //     void onDelete(Venue venue);
-    // }
+    // 1. Create an interface for actions
+    public interface OnVenueActionListener {
+        void onEditClicked(Venue venue);
+        void onDeleteClicked(Venue venue); // We'll use this one later
+    }
+    private final OnVenueActionListener actionListener;
 
-    public VenueAdapter(Context context, List<Venue> venueList) {
+    // 2. Update the constructor to accept the listener
+    public VenueAdapter(Context context, List<Venue> venueList, OnVenueActionListener listener) {
         this.context = context;
         this.venueList = venueList;
+        this.actionListener = listener;
     }
 
     @NonNull
     @Override
     public VenueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for each list item
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_venue_admin, parent, false);
-        return new VenueViewHolder(view);
+        // 3. Pass the listener to the ViewHolder
+        return new VenueViewHolder(view, actionListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VenueViewHolder holder, int position) {
-        // Get the data for the current position
         Venue venue = venueList.get(position);
-
-        // Bind the data to the views
-        holder.tvVenueName.setText(venue.getName());
-        holder.tvVenueLocation.setText(venue.getLocation());
-
-        // Format strings for capacity and price
-        String capacityText = String.format(Locale.getDefault(), "%d guests", venue.getCapacity());
-        holder.tvVenueCapacity.setText(capacityText);
-
-        String priceText = String.format(Locale.getDefault(), "₹%.0f/hr", venue.getPrice());
-        holder.tvVenuePrice.setText(priceText);
-
-        holder.tvTagType.setText(venue.getType());
-
-        // Simple amenities display (e.g., "WIFI, Parking, Audio" -> "3 amenities")
-        String amenities = venue.getAmenities();
-        if (amenities == null || amenities.isEmpty()) {
-            holder.tvTagAmenities.setText("0 amenities");
-        } else {
-            int count = amenities.split(",").length;
-            holder.tvTagAmenities.setText(String.format(Locale.getDefault(), "%d amenities", count));
-        }
-
-        // 8. Load the image from the URI
-        String photoUriString = venue.getPhotoUri();
-        if (photoUriString != null && !photoUriString.isEmpty()) {
-            try {
-                Uri imageUri = Uri.parse(photoUriString);
-                holder.ivVenueImage.setImageURI(imageUri);
-            } catch (Exception e) {
-                // Handle error (e.g., file deleted, URI invalid)
-                // Set a placeholder image
-                holder.ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
-            }
-        } else {
-            // No image, set a placeholder
-            holder.ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
-        }
+        holder.bind(venue); // Create a helper method to bind data
     }
 
     @Override
@@ -88,25 +53,23 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
         return venueList.size();
     }
 
-    // Method to update the list, e.g., after adding a new venue
     public void updateVenues(List<Venue> newVenueList) {
         this.venueList.clear();
         this.venueList.addAll(newVenueList);
-        notifyDataSetChanged(); // Refresh the entire list
+        notifyDataSetChanged();
     }
 
     /**
      * ViewHolder class
-     * Holds all the views for a single list item
      */
-    public static class VenueViewHolder extends RecyclerView.ViewHolder {
+    public class VenueViewHolder extends RecyclerView.ViewHolder {
         ImageView ivVenueImage;
         TextView tvVenuePrice, tvVenueName, tvVenueLocation, tvVenueCapacity, tvTagType, tvTagAmenities;
         ImageButton btnEditVenue, btnDeleteVenue;
 
-        public VenueViewHolder(@NonNull View itemView) {
+        // 4. Update ViewHolder constructor
+        public VenueViewHolder(@NonNull View itemView, OnVenueActionListener listener) {
             super(itemView);
-            // Find all views from list_item_venue_admin.xml
             ivVenueImage = itemView.findViewById(R.id.iv_venue_image);
             tvVenuePrice = itemView.findViewById(R.id.tv_venue_price);
             tvVenueName = itemView.findViewById(R.id.tv_venue_name);
@@ -117,7 +80,49 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             btnEditVenue = itemView.findViewById(R.id.btn_edit_venue);
             btnDeleteVenue = itemView.findViewById(R.id.btn_delete_venue);
 
-            // (We will add click listeners for edit/delete here)
+            // 5. Set click listeners
+            btnEditVenue.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onEditClicked(venueList.get(position));
+                }
+            });
+
+            btnDeleteVenue.setOnClickListener(v -> {
+                // TODO: Implement delete later
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClicked(venueList.get(position));
+                }
+            });
+        }
+
+        // 6. Helper method to bind data
+        void bind(Venue venue) {
+            tvVenueName.setText(venue.getName());
+            tvVenueLocation.setText(venue.getLocation());
+            tvVenueCapacity.setText(String.format(Locale.getDefault(), "%d guests", venue.getCapacity()));
+            tvVenuePrice.setText(String.format(Locale.getDefault(), "₹%.0f/hr", venue.getPrice()));
+            tvTagType.setText(venue.getType());
+
+            String amenities = venue.getAmenities();
+            if (amenities == null || amenities.isEmpty()) {
+                tvTagAmenities.setText("0 amenities");
+            } else {
+                int count = amenities.split(",").length;
+                tvTagAmenities.setText(String.format(Locale.getDefault(), "%d amenities", count));
+            }
+
+            String photoUriString = venue.getPhotoUri();
+            if (photoUriString != null && !photoUriString.isEmpty()) {
+                try {
+                    ivVenueImage.setImageURI(Uri.parse(photoUriString));
+                } catch (Exception e) {
+                    ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+            } else {
+                ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
         }
     }
 }
