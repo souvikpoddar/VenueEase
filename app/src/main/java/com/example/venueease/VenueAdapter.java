@@ -1,6 +1,7 @@
 package com.example.venueease;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,13 +66,21 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             holder.tvTagAmenities.setText(String.format(Locale.getDefault(), "%d amenities", count));
         }
 
-        // TODO: Load image using a library like Glide or Picasso
-        // Example:
-        // if (venue.getPhotoUri() != null && !venue.getPhotoUri().isEmpty()) {
-        //     Glide.with(context).load(venue.getPhotoUri()).into(holder.ivVenueImage);
-        // } else {
-        //     holder.ivVenueImage.setImageResource(R.drawable.default_venue_image); // A placeholder
-        // }
+        // 8. Load the image from the URI
+        String photoUriString = venue.getPhotoUri();
+        if (photoUriString != null && !photoUriString.isEmpty()) {
+            try {
+                Uri imageUri = Uri.parse(photoUriString);
+                holder.ivVenueImage.setImageURI(imageUri);
+            } catch (Exception e) {
+                // Handle error (e.g., file deleted, URI invalid)
+                // Set a placeholder image
+                holder.ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
+            }
+        } else {
+            // No image, set a placeholder
+            holder.ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
+        }
     }
 
     @Override
