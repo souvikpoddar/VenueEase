@@ -24,4 +24,22 @@
     <string name="reset_prompt">Enter your email to receive a reset link</string>
     <string name="reset_send_link">Send Reset Link</string>
     <string name="reset_back_to_sign_in">Back to Sign In</string>
+
+    <string name="admin_dashboard_title">Admin Dashboard</string>
+    <string name="admin_dashboard_welcome">Welcome back, Admin User! Manage your venues and bookings</string>
+    <string name="venue_management_title">Venue Management</string>
+    <string name="venue_management_subtitle">Manage your venue listings and availability</string>
+    <string name="add_venue">Add Venue</string>
+    <string name="search_hint">Search venues by name or location...</string>
+    <string name="city_bangalore">Bangalore</string>
+    <string name="city_delhi">Delhi</string>
+    <string name="city_mumbai">Mumbai</string>
+    <string name="city_chennai">Chennai</string>
+    <string name="city_hyderabad">Hyderabad</string>
+    <string name="city_pune">Pune</string>
+    <string name="city_kolkata">Kolkata</string>
+    <string name="menu_venues">Venues</string>
+    <string name="menu_bookings">Bookings</string>
+    <string name="menu_notifications">Notifications</string>
+    <string name="menu_profile">Profile</string>
 </resources>
