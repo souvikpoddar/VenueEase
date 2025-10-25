@@ -104,27 +104,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    /**
-     * Get all venues from the database
-     * We'll need a Venue model class to return a List<Venue>
-     */
-    public Cursor getAllVenues() {
+    public List<Venue> getAllVenuesList() {
+        List<Venue> venueList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Query to select all venues
         String selectQuery = "SELECT * FROM " + TABLE_VENUES;
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery(selectQuery, null);
-        } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error while getting all venues: " + e.getMessage());
+        // Loop through all rows and add to list
+        if (cursor.moveToFirst()) {
+            do {
+                Venue venue = new Venue();
+                venue.setId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_VENUE_ID)));
+                venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
+                venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
+                venue.setCapacity(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_CAPACITY)));
+                venue.setType(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_TYPE)));
+                venue.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_PRICE_PER_HOUR)));
+                venue.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(KEY_DESCRIPTION)));
+                venue.setAmenities(cursor.getString(cursor.getColumnIndexOrThrow(KEY_AMENITIES)));
+                venue.setPhotoUri(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_PHOTOS)));
+
+                // Add venue to list
+                venueList.add(venue);
+            } while (cursor.moveToNext());
         }
 
-        // Note: We don't close the database here.
-        // The calling activity (e.g., AdminDashboardActivity) will be responsible
-        // for managing the cursor and closing it (and the db) when done.
-        return cursor;
+        // Close the cursor and database
+        cursor.close();
+        db.close();
+
+        // Return the list
+        return venueList;
     }
 
     // We will add getVenueDetails(), updateVenue(), and deleteVenue() methods here later.
