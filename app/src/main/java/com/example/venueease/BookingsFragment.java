@@ -64,9 +64,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         super.onViewCreated(view, savedInstanceState);
 
         dbHelper = new DatabaseHelper(getContext());
-        // --- TEMPORARY: Add test data ---
-        dbHelper.addTestData();
-        // --- REMOVE THIS LINE IN PRODUCTION ---
+
 
         SharedPreferences sessionPrefs = getActivity().getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
         currentUserEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, null);
@@ -142,7 +140,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
             return;
         }
         // Fetch bookings from DB based on current filters
-        List<Booking> newBookings = dbHelper.getBookings(currentUserEmail, mCurrentStatusFilter, mCurrentDateFilter);
+        List<Booking> newBookings = dbHelper.getBookings(null, mCurrentStatusFilter, mCurrentDateFilter);
         bookingsAdapter.updateBookings(newBookings);
 
         // Show/Hide empty view
@@ -301,5 +299,13 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         } else {
             Toast.makeText(getContext(), "Failed to reject", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh the data whenever the fragment becomes visible
+        updateSummaryCards();
+        loadBookings();
     }
 }
