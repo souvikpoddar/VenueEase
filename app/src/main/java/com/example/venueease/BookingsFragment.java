@@ -1,7 +1,9 @@
 package com.example.venueease;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     // Filter State
     private String mCurrentStatusFilter = BookingsAdapter.STATUS_PENDING;
     private String mCurrentDateFilter = null;
+    private String currentUserEmail;
 
     // Required empty public constructor
     public BookingsFragment() {}
@@ -64,6 +67,9 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         // --- TEMPORARY: Add test data ---
         dbHelper.addTestData();
         // --- REMOVE THIS LINE IN PRODUCTION ---
+
+        SharedPreferences sessionPrefs = getActivity().getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
+        currentUserEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, null);
 
         // Find all views
         rvBookings = view.findViewById(R.id.rv_bookings);
@@ -131,8 +137,12 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     }
 
     private void loadBookings() {
+        if (currentUserEmail == null) {
+            tvEmptyBookings.setText("Error: Could not find user information.");
+            return;
+        }
         // Fetch bookings from DB based on current filters
-        List<Booking> newBookings = dbHelper.getBookings(mCurrentStatusFilter, mCurrentDateFilter);
+        List<Booking> newBookings = dbHelper.getBookings(currentUserEmail, mCurrentStatusFilter, mCurrentDateFilter);
         bookingsAdapter.updateBookings(newBookings);
 
         // Show/Hide empty view

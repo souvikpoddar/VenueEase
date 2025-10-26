@@ -270,18 +270,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Fetches bookings that match a specific status and/or date.
      * We also join with the Venues table to get venue details.
      */
-    public List<Booking> getBookings(String status, String date) {
+    public List<Booking> getBookings(String userEmail, String status, String date) {
         List<Booking> bookingList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        if (userEmail == null || userEmail.isEmpty()) {
+            Log.e("DatabaseHelper", "User email cannot be null or empty when fetching bookings.");
+            db.close(); // Close DB connection before returning
+            return bookingList; // Return empty list if no user email provided
+        }
+
+
         // We use a LEFT JOIN to get venue details for each booking
+        // The WHERE clause now starts with the user email check
         String query = "SELECT b.*, v." + KEY_VENUE_NAME + ", v." + KEY_LOCATION + ", v." + KEY_CAPACITY +
                 " FROM " + TABLE_BOOKINGS + " b" +
                 " LEFT JOIN " + TABLE_VENUES + " v ON b." + KEY_B_VENUE_ID + " = v." + KEY_VENUE_ID +
-                " WHERE 1=1";
+                " WHERE b." + KEY_USER_EMAIL + " = ?"; // Start WHERE with user email
 
         List<String> selectionArgs = new ArrayList<>();
+        selectionArgs.add(userEmail); // Add user email as the first argument
 
+        // Add optional filters
         if (status != null && !status.isEmpty()) {
             query += " AND b." + KEY_BOOKING_STATUS + " = ?";
             selectionArgs.add(status);
@@ -315,11 +325,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 booking.setSubmittedDate(cursor.getString(cursor.getColumnIndexOrThrow(KEY_SUBMITTED_DATE)));
 
                 // --- Joined Venue Details ---
-                Venue venue = new Venue();
-                venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
-                venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
-                venue.setCapacity(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_CAPACITY)));
-                booking.setVenue(venue); // Attach the venue object to the booking
+                // Handle potential nulls if venue was deleted after booking
+                int venueNameCol = cursor.getColumnIndex(KEY_VENUE_NAME);
+                int locationCol = cursor.getColumnIndex(KEY_LOCATION);
+                int capacityCol = cursor.getColumnIndex(KEY_CAPACITY);
+
+                if (venueNameCol != -1 && !cursor.isNull(venueNameCol)) {
+                    Venue venue = new Venue();
+                    venue.setId(booking.getVenueId()); // Use the ID from the booking table
+                    venue.setName(cursor.getString(venueNameCol));
+                    venue.setLocation(cursor.getString(locationCol));
+                    venue.setCapacity(cursor.getInt(capacityCol));
+                    booking.setVenue(venue); // Attach the venue object to the booking
+                } else {
+                    booking.setVenue(null); // Explicitly set venue to null if not found
+                }
 
                 bookingList.add(booking);
             } while (cursor.moveToNext());

@@ -70,9 +70,9 @@ public class UserBookingsFragment extends Fragment implements UserBookingsAdapte
         rvUserBookings.setAdapter(userBookingsAdapter);
     }
 
+    // In UserBookingsFragment.java
     private void loadUserBookings() {
         if (currentUserEmail == null) {
-            // Handle case where user email is not found (shouldn't happen if logged in)
             tvEmptyUserBookings.setText("Error: Could not find user information.");
             tvEmptyUserBookings.setVisibility(View.VISIBLE);
             rvUserBookings.setVisibility(View.GONE);
@@ -80,31 +80,21 @@ public class UserBookingsFragment extends Fragment implements UserBookingsAdapte
             return;
         }
 
-        // TODO: Update DatabaseHelper to fetch bookings by user email
-        // For now, we'll fetch ALL bookings as a placeholder
-        List<Booking> userBookings = dbHelper.getBookings(null, null); // Fetch all bookings for now
-
-        // --- TEMPORARY FILTERING (REMOVE WHEN DB IS UPDATED) ---
-        List<Booking> filteredBookings = new ArrayList<>();
-        for (Booking booking : userBookings) {
-            if (currentUserEmail.equals(booking.getUserEmail())) {
-                filteredBookings.add(booking);
-            }
-        }
-        // --- END OF TEMPORARY FILTERING ---
+        // Pass the user's email, null for status, and null for date to get all their bookings
+        List<Booking> userBookings = dbHelper.getBookings(currentUserEmail, null, null);
 
         // Update adapter
-        userBookingsAdapter.updateUserBookings(filteredBookings);
+        userBookingsAdapter.updateUserBookings(userBookings);
 
         // Update header count
-        int count = filteredBookings.size();
+        int count = userBookings.size();
         tvBookingCountHeader.setText(String.format(Locale.getDefault(), "%d booking%s", count, count == 1 ? "" : "s"));
 
         // Show/Hide empty view
-        if (filteredBookings.isEmpty()) {
+        if (userBookings.isEmpty()) {
             rvUserBookings.setVisibility(View.GONE);
             tvEmptyUserBookings.setVisibility(View.VISIBLE);
-            tvEmptyUserBookings.setText("You haven't made any bookings yet."); // Set default message
+            tvEmptyUserBookings.setText("You haven't made any bookings yet.");
         } else {
             rvUserBookings.setVisibility(View.VISIBLE);
             tvEmptyUserBookings.setVisibility(View.GONE);
