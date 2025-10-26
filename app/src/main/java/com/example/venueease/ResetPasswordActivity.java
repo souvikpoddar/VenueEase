@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,8 +41,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         tvBackToSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Both actions just go back to the Login screen
-                navigateToLogin();
+                finish();
             }
         });
     }
@@ -56,16 +56,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        // Show the dummy toast message as requested
-        Toast.makeText(this, "Password reset link sent to your email!", Toast.LENGTH_LONG).show();
+        // 3. Set the result to OK
+        setResult(Activity.RESULT_OK);
 
-        // Redirect back to the sign in page
-        navigateToLogin();
-    }
-
-    private void navigateToLogin() {
-        // We just 'finish' this activity.
-        // This will pop it off the stack and return to the previous activity (LoginActivity).
+        // 4. Finish the activity
         finish();
     }
 }

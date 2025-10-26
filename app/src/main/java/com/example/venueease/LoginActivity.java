@@ -8,11 +8,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity; // Import this
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher; // Import this
+import androidx.activity.result.contract.ActivityResultContracts; // Import this
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.snackbar.Snackbar; // Import this
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+    private ActivityResultLauncher<Intent> resetPasswordLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,19 @@ public class LoginActivity extends AppCompatActivity {
         checkLoginStatus();
 
         setContentView(R.layout.activity_login);
+
+        // 2. Initialize the launcher
+        resetPasswordLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // This is the callback
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Show the Snackbar if the result is OK
+                        View rootLayout = findViewById(R.id.login_root_layout);
+                        Snackbar.make(rootLayout, "Password reset link sent to your email!", Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
 
         // Find Views
         etEmail = findViewById(R.id.et_email);
@@ -73,7 +92,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-                startActivity(intent);
+                // Launch using the new launcher instead of startActivity()
+                resetPasswordLauncher.launch(intent);
             }
         });
     }
