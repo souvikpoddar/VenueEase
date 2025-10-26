@@ -74,7 +74,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         // Declare all UI elements from list_item_booking_admin.xml
         TextView tvVenueName, tvBookingStatus, tvRequestFrom, tvEventDate, tvEventTime,
                 tvEventType, tvEventPrice, tvVenueLocation, tvVenueCapacity,
-                tvSpecialRequests, tvStatusMessage, tvSubmittedDate;
+                tvSpecialRequests, tvStatusMessage, tvSubmittedDate, tvAvailableTag;;
         LinearLayout llSpecialRequests, llStatusMessage, llActionButtons;
         MaterialButton btnReject, btnApprove;
 
@@ -93,6 +93,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
             tvSpecialRequests = itemView.findViewById(R.id.tv_special_requests);
             tvStatusMessage = itemView.findViewById(R.id.tv_status_message);
             tvSubmittedDate = itemView.findViewById(R.id.tv_submitted_date);
+            tvAvailableTag = itemView.findViewById(R.id.tv_available_tag);
             llSpecialRequests = itemView.findViewById(R.id.ll_special_requests);
             llStatusMessage = itemView.findViewById(R.id.ll_status_message);
             llActionButtons = itemView.findViewById(R.id.ll_action_buttons);
@@ -105,22 +106,28 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
          */
         public void bind(Booking booking, OnBookingActionListener actionListener) {
             // --- 1. Set Basic Info ---
-            // (We'll need to fetch Venue details, for now we can use dummy data or IDs)
-            // tvVenueName.setText(booking.getVenue().getName());
-            // tvVenueLocation.setText(booking.getVenue().getLocation());
-            // tvVenueCapacity.setText(String.format(Locale.getDefault(), "Capacity: %d", booking.getVenue().getCapacity()));
+            if (booking.getVenue() != null) {
+                tvVenueName.setText(booking.getVenue().getName());
+                tvVenueLocation.setText(booking.getVenue().getLocation());
+                tvVenueCapacity.setText(String.format(Locale.getDefault(), "Capacity: %d", booking.getVenue().getCapacity()));
+            } else {
+                // Fallback in case the venue was deleted or data is bad
+                tvVenueName.setText("Venue Not Found");
+                tvVenueLocation.setText("N/A");
+                tvVenueCapacity.setText("N/A");
+            }
 
-            // Placeholder text until we join tables
-            tvVenueName.setText("Venue ID: " + booking.getVenueId());
-            tvVenueLocation.setText("Location TBD");
-            tvVenueCapacity.setText("Capacity TBD");
+            // This tag is now visible and will show
+            tvAvailableTag.setVisibility(View.VISIBLE);
+
+
 
 
             tvRequestFrom.setText(String.format("Request from %s | %s", booking.getUserName(), booking.getUserEmail()));
             tvEventDate.setText(booking.getEventDate());
             tvEventTime.setText(String.format("%s - %s", booking.getStartTime(), booking.getEndTime()));
             tvEventType.setText(booking.getEventType());
-            tvEventPrice.setText(String.format(Locale.getDefault(), "₹%.0f", booking.getTotalPrice()));
+            tvEventPrice.setText(String.format(Locale.getDefault(), "%.0f", booking.getTotalPrice()));
             tvSubmittedDate.setText(String.format("Submitted on %s", booking.getSubmittedDate()));
 
             // Handle special requests
