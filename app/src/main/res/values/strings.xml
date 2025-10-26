@@ -1,3 +1,76 @@
 <resources>
     <string name="app_name">VenueEase</string>
+
+    <string name="login_welcome">Welcome Back</string>
+    <string name="login_prompt">Sign in to your venue booking account</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_sign_up">Sign up</string>
+
+    <string name="register_title">Create Account</string>
+    <string name="register_prompt">Join our venue booking platform</string>
+    <string name="register_full_name">Full Name</string>
+    <string name="register_phone">Phone Number</string>
+    <string name="register_password">Password</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_create_account">Create Account</string>
+    <string name="register_already_account">Already have an account?</string>
+    <string name="register_sign_in">Sign in</string>
+
+    <string name="reset_title">Reset Password</string>
+    <string name="reset_prompt">Enter your email to receive a reset link</string>
+    <string name="reset_send_link">Send Reset Link</string>
+    <string name="reset_back_to_sign_in">Back to Sign In</string>
+
+    <string name="admin_dashboard_title">Admin Dashboard</string>
+    <string name="admin_dashboard_welcome">Welcome back, Admin User! Manage your venues and bookings</string>
+    <string name="venue_management_title">Venue Management</string>
+    <string name="venue_management_subtitle">Manage your venue listings and availability</string>
+    <string name="add_venue">Add Venue</string>
+    <string name="search_hint">Search venues by name or location...</string>
+    <string name="city_bangalore">Bangalore</string>
+    <string name="city_delhi">Delhi</string>
+    <string name="city_mumbai">Mumbai</string>
+    <string name="city_chennai">Chennai</string>
+    <string name="city_hyderabad">Hyderabad</string>
+    <string name="city_pune">Pune</string>
+    <string name="city_kolkata">Kolkata</string>
+    <string name="menu_venues">Venues</string>
+    <string name="menu_bookings">Bookings</string>
+    <string name="menu_notifications">Notifications</string>
+    <string name="menu_profile">Profile</string>
+
+    <string name="add_new_venue_title">Add New Venue</string>
+    <string name="form_venue_name">Venue Name*</string>
+    <string name="form_location">Location*</string>
+    <string name="form_capacity">Capacity*</string>
+    <string name="form_venue_type">Venue Type*</string>
+    <string name="form_price">Price per Hour*</string>
+    <string name="form_description">Description</string>
+    <string name="form_amenities">Amenities (comma separated)</string>
+    <string name="form_photos">Venue Photos</string>
+    <string name="form_upload_prompt">Click to upload venue photo</string>
+    <string name="form_upload_supported">Supports: PNG, JPG, JPEG</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_add_venue">Add Venue</string>
+
+    <string name="filter_title">Filter Venues</string>
+    <string name="filter_date">Date</string>
+    <string name="filter_venue_type">Venue Type</string>
+    <string name="filter_all_types">All Types</string>
+    <string name="filter_min_capacity">Minimum Capacity</string>
+    <string name="filter_any_capacity">Any capacity</string>
+    <string name="filter_max_price">Max Price/Hour</string>
+    <string name="filter_any_price">Any price</string>
+    <string name="btn_clear_all">Clear All</string>
+    <string name="btn_apply_filters">Apply Filters</string>
+
+    <string name="empty_venues_admin_default">No venues yet. Tap the \'+\' button to add one!</string>
+    <string name="empty_venues_admin_filtered">No venues found matching your criteria.</string>
+
+    <string name="user_welcome">Welcome back, %s!</string>
+    <string name="available_venues_count">Available Venues (%d venues)</string>
 </resources>

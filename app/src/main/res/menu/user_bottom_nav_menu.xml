@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/user_nav_venues"
+        android:icon="@drawable/ic_venue"
+        android:title="@string/menu_venues" />
+    <item
+        android:id="@+id/user_nav_bookings"
+        android:icon="@drawable/ic_bookings"
+        android:title="@string/menu_bookings" />
+    <item
+        android:id="@+id/user_nav_notifications"
+        android:icon="@drawable/ic_notifications"
+        android:title="@string/menu_notifications" />
+    <item
+        android:id="@+id/user_nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/menu_profile" />
+</menu>

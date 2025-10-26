@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="app_background">#F5F5F5</color>
+
+    <color name="bg_color_approved">#E6F4EA</color>
+    <color name="text_color_approved">#34A853</color>
+
+    <color name="bg_color_pending">#FEF7E0</color>
+    <color name="text_color_pending">#FBBC04</color>
+
+    <color name="bg_color_rejected">#FCE8E6</color>
+    <color name="text_color_rejected">#EA4335</color>
+
+    <color name="bg_color_confirmed">#E3F2FD</color>
+    <color name="text_color_confirmed">#185ABC</color>
 </resources>
