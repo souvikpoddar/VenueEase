@@ -86,25 +86,21 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         chipGroupFilter.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-                // checkedIds is a List, even in single selection mode.
 
                 if (checkedIds.isEmpty()) {
-                    // If selectionRequired=true, this shouldn't happen,
-                    // but handle it defensively - default to showing all.
                     showUnreadOnly = false;
-                    // Ensure 'All' chip is visually checked if somehow none are
                     Chip allChip = group.findViewById(R.id.chip_notif_all);
                     if (allChip != null && !allChip.isChecked()) {
-                        allChip.setChecked(true); // Re-check 'All' if selection is lost
+                        allChip.setChecked(true);
                     }
                 } else {
-                    // 1. Get the single selected ID from the list
+                    // Get the single selected ID from the list
                     int selectedChipId = checkedIds.get(0);
 
-                    // 2. Compare the int ID
+                    // Compare the int ID
                     if (selectedChipId == R.id.chip_notif_unread) {
                         showUnreadOnly = true;
-                    } else { // Default to All if it's not Unread
+                    } else {
                         showUnreadOnly = false;
                     }
                 }
@@ -129,12 +125,11 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     private void loadNotifications() {
         if (currentUserEmailOrAdmin == null) {
-            // Handle error state appropriately
             tvEmptyNotifications.setText("Error loading notifications.");
             tvEmptyNotifications.setVisibility(View.VISIBLE);
             rvNotifications.setVisibility(View.GONE);
             notificationList.clear();
-            notificationsAdapter.notifyDataSetChanged(); // Ensure adapter knows list is empty
+            notificationsAdapter.notifyDataSetChanged();
             return;
         }
 
@@ -152,8 +147,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         }
     }
 
-    // --- NotificationActionListener Callbacks ---
-
     @Override
     public void onMarkReadUnread(Notification notification, int position) {
         boolean newReadStatus = !notification.isRead();
@@ -163,9 +156,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
             notification.setRead(newReadStatus); // Update the model object
             notificationsAdapter.notifyItemChanged(position); // Visually update the item
 
-            // If we are showing only unread and just marked one as read, remove it visually
             if (showUnreadOnly && newReadStatus) {
-                // It's safer to just reload the list from the DB in this case
                 loadNotifications();
             }
 
@@ -177,13 +168,12 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     @Override
     public void onDeleteNotification(Notification notification, int position) {
-        // Optional: Add confirmation dialog
         boolean success = dbHelper.deleteNotification(notification.getNotificationId());
         if (success) {
             // Remove item visually from the adapter
             notificationsAdapter.removeItem(position);
 
-            // Update empty view if needed
+            // Update empty view
             if (notificationsAdapter.getItemCount() == 0) {
                 tvEmptyNotifications.setVisibility(View.VISIBLE);
                 rvNotifications.setVisibility(View.GONE);
@@ -197,9 +187,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     @Override
     public void onNotificationClicked(Notification notification) {
-        // Optional: Navigate or show details
         Toast.makeText(getContext(), "Clicked: " + notification.getTitle(), Toast.LENGTH_SHORT).show();
-        // Example: If it's a booking notification, navigate to booking details?
-        // if (notification.getBookingId() > 0) { ... }
     }
 }

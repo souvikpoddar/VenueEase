@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class ProcessingPaymentFragment extends BottomSheetDialogFragment {
 
-    private static final long PROCESSING_DELAY_MS = 3000; // 3 seconds delay
+    private static final long PROCESSING_DELAY_MS = 3000;
 
     private Booking bookingProcessed;
     private String paymentId; // The generated payment ID
@@ -23,7 +23,6 @@ public class ProcessingPaymentFragment extends BottomSheetDialogFragment {
     // Listener Interface
     public interface PaymentProcessingListener {
         void onPaymentSuccess(Booking booking, String paymentId);
-        // Add onError if needed
     }
     private PaymentProcessingListener listener;
 

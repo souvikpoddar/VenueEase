@@ -78,7 +78,7 @@ public class PaymentSuccessFragment extends BottomSheetDialogFragment {
         });
         btnRateVenue.setOnClickListener(v -> {
             if (listener != null) listener.onRateVenueClicked(completedBooking);
-            dismiss(); // Close this dialog to show the rating one
+            dismiss();
         });
     }
 
@@ -92,10 +92,7 @@ public class PaymentSuccessFragment extends BottomSheetDialogFragment {
     @Override
     public void onDismiss(@NonNull android.content.DialogInterface dialog) {
         super.onDismiss(dialog);
-        // Ensure the list refreshes even if closed manually
         if (listener != null) {
-            // Check if rate button was clicked maybe, otherwise call closed
-            // listener.onPaymentSuccessClosed();
         }
     }
 }

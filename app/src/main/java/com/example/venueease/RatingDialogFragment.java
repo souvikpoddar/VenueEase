@@ -43,7 +43,6 @@ public class RatingDialogFragment extends BottomSheetDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // Assuming the parent Fragment implements the listener
         if (getParentFragment() instanceof RatingListener) {
             listener = (RatingListener) getParentFragment();
         } else {
@@ -73,7 +72,6 @@ public class RatingDialogFragment extends BottomSheetDialogFragment {
         if (bookingToRate != null && bookingToRate.getVenue() != null) {
             tvVenueName.setText("Rate and review " + bookingToRate.getVenue().getName());
         } else {
-            // Handle error or set default text
             tvVenueName.setText("Rate and review this venue");
         }
 

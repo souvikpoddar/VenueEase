@@ -18,15 +18,13 @@ public class Booking implements Serializable {
     private String bookingStatus;
     private String submittedDate;
 
-    // We'll also add this to fetch Venue details later
-    private Venue venue; // Optional: To hold the full Venue object
+    private Venue venue;
 
     // Constructors
     public Booking() {
     }
 
     // --- Getters and Setters ---
-    // (You can generate these in Android Studio: Right Click -> Generate -> Getters and Setters)
 
     public int getBookingId() {
         return bookingId;
@@ -132,7 +130,6 @@ public class Booking implements Serializable {
         this.submittedDate = submittedDate;
     }
 
-    // --- Optional Venue Getter/Setter ---
     public Venue getVenue() {
         return venue;
     }

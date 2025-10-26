@@ -20,14 +20,14 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
     private Context context;
     private List<Venue> venueList;
 
-    // 1. Create an interface for actions
+    // Create an interface for actions
     public interface OnVenueActionListener {
         void onEditClicked(Venue venue);
-        void onDeleteClicked(Venue venue); // We'll use this one later
+        void onDeleteClicked(Venue venue);
     }
     private final OnVenueActionListener actionListener;
 
-    // 2. Update the constructor to accept the listener
+    // Update the constructor to accept the listener
     public VenueAdapter(Context context, List<Venue> venueList, OnVenueActionListener listener) {
         this.context = context;
         this.venueList = venueList;
@@ -38,14 +38,14 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
     @Override
     public VenueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_venue_admin, parent, false);
-        // 3. Pass the listener to the ViewHolder
+        // Pass the listener to the ViewHolder
         return new VenueViewHolder(view, actionListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VenueViewHolder holder, int position) {
         Venue venue = venueList.get(position);
-        holder.bind(venue); // Create a helper method to bind data
+        holder.bind(venue);
     }
 
     @Override
@@ -59,15 +59,12 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
         notifyDataSetChanged();
     }
 
-    /**
-     * ViewHolder class
-     */
     public class VenueViewHolder extends RecyclerView.ViewHolder {
         ImageView ivVenueImage;
         TextView tvVenuePrice, tvVenueName, tvVenueLocation, tvVenueCapacity, tvTagType, tvTagAmenities;
         ImageButton btnEditVenue, btnDeleteVenue;
 
-        // 4. Update ViewHolder constructor
+        // Update ViewHolder constructor
         public VenueViewHolder(@NonNull View itemView, OnVenueActionListener listener) {
             super(itemView);
             ivVenueImage = itemView.findViewById(R.id.iv_venue_image);
@@ -80,7 +77,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             btnEditVenue = itemView.findViewById(R.id.btn_edit_venue);
             btnDeleteVenue = itemView.findViewById(R.id.btn_delete_venue);
 
-            // 5. Set click listeners
+            // Set click listeners
             btnEditVenue.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -89,7 +86,6 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             });
 
             btnDeleteVenue.setOnClickListener(v -> {
-                // TODO: Implement delete later
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onDeleteClicked(venueList.get(position));
@@ -97,7 +93,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             });
         }
 
-        // 6. Helper method to bind data
+        // Helper method to bind data
         void bind(Venue venue) {
             tvVenueName.setText(venue.getName());
             tvVenueLocation.setText(venue.getLocation());

@@ -46,7 +46,6 @@ public class UpiPaymentFragment extends BottomSheetDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // Ensure the hosting fragment or activity implements the listener
         if (getParentFragment() instanceof UpiPaymentListener) {
             listener = (UpiPaymentListener) getParentFragment();
         } else {
@@ -109,7 +108,7 @@ public class UpiPaymentFragment extends BottomSheetDialogFragment {
             etUpiId.requestFocus();
             return;
         }
-        // Basic UPI ID format check (optional but recommended)
+        // UPI ID format check
         if (!upiId.contains("@")) {
             tilUpiId.setError("Invalid UPI ID format");
             etUpiId.requestFocus();

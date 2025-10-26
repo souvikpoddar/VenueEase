@@ -19,11 +19,10 @@ import java.util.Locale;
 
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.BookingViewHolder> {
 
-    // Status constants for clarity
     public static final String STATUS_PENDING = "Pending";
     public static final String STATUS_APPROVED = "Approved";
     public static final String STATUS_REJECTED = "Rejected";
-    public static final String STATUS_CONFIRMED = "Confirmed"; // (e.g., after payment)
+    public static final String STATUS_CONFIRMED = "Confirmed";
 
     private Context context;
     private List<Booking> bookingList;
@@ -66,9 +65,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         notifyDataSetChanged();
     }
 
-    /**
-     * ViewHolder Class
-     */
+    // ViewHolder Class
     class BookingViewHolder extends RecyclerView.ViewHolder {
 
         // Declare all UI elements from list_item_booking_admin.xml
@@ -101,27 +98,20 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
             btnApprove = itemView.findViewById(R.id.btn_approve);
         }
 
-        /**
-         * Binds a Booking object to the ViewHolder's views
-         */
+        // Binds a Booking object to the ViewHolder's views
         public void bind(Booking booking, OnBookingActionListener actionListener) {
-            // --- 1. Set Basic Info ---
+            // Set Basic Info
             if (booking.getVenue() != null) {
                 tvVenueName.setText(booking.getVenue().getName());
                 tvVenueLocation.setText(booking.getVenue().getLocation());
                 tvVenueCapacity.setText(String.format(Locale.getDefault(), "Capacity: %d", booking.getVenue().getCapacity()));
             } else {
-                // Fallback in case the venue was deleted or data is bad
                 tvVenueName.setText("Venue Not Found");
                 tvVenueLocation.setText("N/A");
                 tvVenueCapacity.setText("N/A");
             }
 
-            // This tag is now visible and will show
             tvAvailableTag.setVisibility(View.VISIBLE);
-
-
-
 
             tvRequestFrom.setText(String.format("Request from %s | %s", booking.getUserName(), booking.getUserEmail()));
             tvEventDate.setText(booking.getEventDate());
@@ -138,7 +128,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
                 tvSpecialRequests.setText(booking.getSpecialRequests());
             }
 
-            // --- 2. Handle Status-Specific UI ---
+            // Handle Status-Specific UI
             String status = booking.getBookingStatus();
             tvBookingStatus.setText(status);
 
@@ -174,7 +164,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
                     break;
             }
 
-            // --- 3. Set Click Listeners ---
+            // Set Click Listeners
             btnApprove.setOnClickListener(v -> actionListener.onApprove(booking));
             btnReject.setOnClickListener(v -> actionListener.onReject(booking));
         }

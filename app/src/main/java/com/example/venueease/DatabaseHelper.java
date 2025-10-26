@@ -35,42 +35,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_AMENITIES = "amenities";
     public static final String KEY_VENUE_PHOTOS = "venue_photos"; // Storing as URI string
 
-    // --- NEW: Bookings Table ---
+    // Bookings Table
     public static final String TABLE_BOOKINGS = "Bookings";
     public static final String KEY_BOOKING_ID = "booking_id";
     public static final String KEY_B_VENUE_ID = "venue_id"; // Foreign key to Venues table
-    public static final String KEY_B_USER_ID = "user_id"; // Foreign key to Users table (we'll add later)
-    public static final String KEY_USER_NAME = "user_name"; // e.g., "John Doe"
-    public static final String KEY_USER_EMAIL = "user_email"; // e.g., "john@example.com"
-    public static final String KEY_EVENT_DATE = "event_date"; // e.g., "Sun, Dec 15, 2024"
-    public static final String KEY_START_TIME = "start_time"; // e.g., "09:00"
-    public static final String KEY_END_TIME = "end_time"; // e.g., "17:00"
-    public static final String KEY_EVENT_TYPE = "event_type"; // e.g., "Corporate Seminar"
-    public static final String KEY_TOTAL_PRICE = "total_price"; // e.g., 1200
-    public static final String KEY_SPECIAL_REQUESTS = "special_requests"; // e.g., "Need additional mics"
-    public static final String KEY_BOOKING_STATUS = "booking_status"; // "Pending", "Approved", "Rejected", "Confirmed"
-    public static final String KEY_SUBMITTED_DATE = "submitted_date"; // e.g., "1/12/2024"
+    public static final String KEY_B_USER_ID = "user_id";
+    public static final String KEY_USER_NAME = "user_name";
+    public static final String KEY_USER_EMAIL = "user_email";
+    public static final String KEY_EVENT_DATE = "event_date";
+    public static final String KEY_START_TIME = "start_time";
+    public static final String KEY_END_TIME = "end_time";
+    public static final String KEY_EVENT_TYPE = "event_type";
+    public static final String KEY_TOTAL_PRICE = "total_price";
+    public static final String KEY_SPECIAL_REQUESTS = "special_requests";
+    public static final String KEY_BOOKING_STATUS = "booking_status";
+    public static final String KEY_SUBMITTED_DATE = "submitted_date";
 
     public static final String TABLE_RATINGS = "Ratings";
     public static final String KEY_RATING_ID = "rating_id";
     public static final String KEY_R_VENUE_ID = "venue_id"; // Foreign key to Venues
     public static final String KEY_R_BOOKING_ID = "booking_id"; // Foreign key to Bookings
-    public static final String KEY_R_USER_ID = "user_id"; // Foreign key to Users
-    public static final String KEY_RATING_VALUE = "rating_value"; // Float (1.0 to 5.0)
-    public static final String KEY_RATING_COMMENT = "rating_comment"; // Text
-    public static final String KEY_RATING_DATE = "rating_date"; // Text
+    public static final String KEY_R_USER_ID = "user_id";
+    public static final String KEY_RATING_VALUE = "rating_value";
+    public static final String KEY_RATING_COMMENT = "rating_comment";
+    public static final String KEY_RATING_DATE = "rating_date";
 
-    // --- Notifications Table ---
+    // Notifications Table
     public static final String TABLE_NOTIFICATIONS = "Notifications";
     public static final String KEY_NOTIFICATION_ID = "notification_id";
     public static final String KEY_N_USER_EMAIL = "user_email"; // Email of the user this notification is for (or "admin")
-    public static final String KEY_NOTIFICATION_TYPE = "notification_type"; // e.g., "NEW_BOOKING", "BOOKING_APPROVED", "PAYMENT_RECEIVED", "RATING_SUBMITTED"
+    public static final String KEY_NOTIFICATION_TYPE = "notification_type"; // "NEW_BOOKING", "BOOKING_APPROVED", "PAYMENT_RECEIVED", "RATING_SUBMITTED"
     public static final String KEY_NOTIFICATION_TITLE = "notification_title";
     public static final String KEY_NOTIFICATION_MESSAGE = "notification_message";
-    public static final String KEY_N_BOOKING_ID = "booking_id"; // Optional: Link to relevant booking
-    public static final String KEY_N_VENUE_ID = "venue_id"; // Optional: Link to relevant venue
-    public static final String KEY_IS_READ = "is_read"; // INTEGER (0 = false, 1 = true)
-    public static final String KEY_NOTIFICATION_TIMESTAMP = "notification_timestamp"; // TEXT (e.g., ISO 8601 format or similar for sorting)
+    public static final String KEY_N_BOOKING_ID = "booking_id";
+    public static final String KEY_N_VENUE_ID = "venue_id";
+    public static final String KEY_IS_READ = "is_read";
+    public static final String KEY_NOTIFICATION_TIMESTAMP = "notification_timestamp";
 
     // Create table SQL query
     private static final String CREATE_TABLE_VENUES =
@@ -89,8 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_BOOKINGS =
             "CREATE TABLE " + TABLE_BOOKINGS + "("
                     + KEY_BOOKING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_B_VENUE_ID + " INTEGER," // We'll link this to the Venues table
-                    + KEY_B_USER_ID + " INTEGER," // We'll link this to a Users table
+                    + KEY_B_VENUE_ID + " INTEGER,"
+                    + KEY_B_USER_ID + " INTEGER,"
                     + KEY_USER_NAME + " TEXT,"
                     + KEY_USER_EMAIL + " TEXT,"
                     + KEY_EVENT_DATE + " TEXT,"
@@ -101,8 +101,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + KEY_SPECIAL_REQUESTS + " TEXT,"
                     + KEY_BOOKING_STATUS + " TEXT,"
                     + KEY_SUBMITTED_DATE + " TEXT"
-                    // + ", FOREIGN KEY(" + KEY_B_VENUE_ID + ") REFERENCES " + TABLE_VENUES + "(" + KEY_VENUE_ID + ")"
-                    // We'll add real foreign keys later if we build the Users table
                     + ")";
 
     private static final String CREATE_TABLE_RATINGS =
@@ -114,8 +112,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + KEY_RATING_VALUE + " REAL,"
                     + KEY_RATING_COMMENT + " TEXT,"
                     + KEY_RATING_DATE + " TEXT"
-                    // + ", FOREIGN KEY(" + KEY_R_VENUE_ID + ") REFERENCES " + TABLE_VENUES + "(" + KEY_VENUE_ID + ")"
-                    // + ", FOREIGN KEY(" + KEY_R_BOOKING_ID + ") REFERENCES " + TABLE_BOOKINGS + "(" + KEY_BOOKING_ID + ")"
                     + ")";
 
     private static final String CREATE_TABLE_NOTIFICATIONS =
@@ -142,7 +138,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_BOOKINGS);
         db.execSQL(CREATE_TABLE_RATINGS);
         db.execSQL(CREATE_TABLE_NOTIFICATIONS);
-        // You could also create a Users table here if needed
     }
 
     // Called when the database needs to be upgraded
@@ -157,19 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /**
-     * ----------------------------------------------------------------
-     * "Venues" table methods (CRUD)
-     * ----------------------------------------------------------------
-     */
-
-    /**
-     * Add a new venue to the database
-     * We'll need a Venue model class for this to be cleaner, but for now
-     * we can pass all parameters.
-     *
-     * @return true if insertion is successful, false otherwise
-     */
+    // Add a new venue to the database
     public boolean addVenue(String name, String location, int capacity, String type,
                             double price, String description, String amenities, String photoUri) {
 
@@ -195,65 +178,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    // ... (inside DatabaseHelper.java)
-
-    /**
-     * Get all venues that match a search query and filter criteria
-     */
+    // Get venues matching search query and filter criteria
     public List<Venue> getFilteredVenues(String nameOrLocationQuery, FilterCriteria criteria) {
         List<Venue> venueList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Base query
-        StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_VENUES + " WHERE 1=1");
+        // Base query - selects venues
+        StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_VENUES + " v WHERE 1=1");
         List<String> selectionArgs = new ArrayList<>();
 
-        // Add search query for EITHER name OR location
+        // Add search query for name OR location
         if (nameOrLocationQuery != null && !nameOrLocationQuery.isEmpty()) {
-            query.append(" AND (")
-                    .append(KEY_VENUE_NAME).append(" LIKE ? OR ")
+            query.append(" AND (v.").append(KEY_VENUE_NAME).append(" LIKE ? OR v.")
                     .append(KEY_LOCATION).append(" LIKE ?)");
-
-            // Add the argument twice, once for name and once for location
             selectionArgs.add("%" + nameOrLocationQuery + "%");
             selectionArgs.add("%" + nameOrLocationQuery + "%");
         }
 
-        // Add filter criteria
+        // Add filter criteria (Type, Capacity, Price)
+        String filterDate = null; // Store date separately for availability check
         if (criteria != null) {
             if (criteria.getVenueType() != null) {
-                query.append(" AND ").append(KEY_VENUE_TYPE).append(" = ?");
+                query.append(" AND v.").append(KEY_VENUE_TYPE).append(" = ?");
                 selectionArgs.add(criteria.getVenueType());
             }
             if (criteria.getMinCapacity() != FilterCriteria.ANY_CAPACITY) {
-                query.append(" AND ").append(KEY_CAPACITY).append(" >= ?");
+                query.append(" AND v.").append(KEY_CAPACITY).append(" >= ?");
                 selectionArgs.add(String.valueOf(criteria.getMinCapacity()));
             }
             if (criteria.getMaxPrice() != FilterCriteria.ANY_PRICE) {
-                query.append(" AND ").append(KEY_PRICE_PER_HOUR).append(" <= ?");
+                query.append(" AND v.").append(KEY_PRICE_PER_HOUR).append(" <= ?");
                 selectionArgs.add(String.valueOf(criteria.getMaxPrice()));
             }
-
-            // TODO: Implement Date filter logic
-            // This requires a check against the 'Bookings' table to see if a venue
-            // is available on that date. We will add this logic later.
             if (criteria.getDate() != null) {
-                Log.w("DatabaseHelper", "Date filter is not yet implemented.");
+                filterDate = criteria.getDate();
+                Log.d("DatabaseHelper", "Filtering for availability on date: " + filterDate);
             }
         }
 
-        // Convert List<String> to String[]
-        String[] args = new String[selectionArgs.size()];
-        selectionArgs.toArray(args);
+        // Add Date Availability Check using a Subquery
+        if (filterDate != null) {
+            query.append(" AND NOT EXISTS (");
+            query.append("SELECT 1 FROM ").append(TABLE_BOOKINGS).append(" b ");
+            query.append("WHERE b.").append(KEY_B_VENUE_ID).append(" = v.").append(KEY_VENUE_ID); // Link to the outer venue
+            query.append(" AND b.").append(KEY_EVENT_DATE).append(" = ?"); // Check the date
+            query.append(" AND b.").append(KEY_BOOKING_STATUS).append(" IN (?, ?, ?)"); // Check relevant statuses
+            query.append(")");
 
-        // Execute query
+            // Add arguments for the subquery
+            selectionArgs.add(filterDate); // Argument for date
+            selectionArgs.add(BookingsAdapter.STATUS_PENDING);   // Argument for status 1
+            selectionArgs.add(BookingsAdapter.STATUS_APPROVED);  // Argument for status 2
+            selectionArgs.add(BookingsAdapter.STATUS_CONFIRMED); // Argument for status 3
+        }
+
+        // Execute Query
+        String[] args = selectionArgs.toArray(new String[0]);
+        Log.d("DatabaseHelper", "Final Venue Query: " + query.toString());
+        Log.d("DatabaseHelper", "Final Venue Args: " + selectionArgs.toString());
+
         Cursor cursor = db.rawQuery(query.toString(), args);
+        Log.d("DatabaseHelper", "Venue Cursor count: " + cursor.getCount());
 
-        // Loop through all rows and add to list
+        // Process Results
         if (cursor.moveToFirst()) {
             do {
                 Venue venue = new Venue();
-                // (Set all properties: id, name, location, etc.)
                 venue.setId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_VENUE_ID)));
                 venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
                 venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
@@ -312,16 +302,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected;
     }
 
-    /**
-     * ----------------------------------------------------------------
-     * "Bookings" table methods
-     * ----------------------------------------------------------------
-     */
-
-    /**
-     * Fetches bookings that match a specific status and/or date.
-     * We also join with the Venues table to get venue details.
-     */
+    // Fetches bookings that match a specific status and/or date.
     public List<Booking> getBookings(String userEmail, String status, String date) {
         List<Booking> bookingList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -330,7 +311,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT b.*, v." + KEY_VENUE_NAME + ", v." + KEY_LOCATION + ", v." + KEY_CAPACITY +
                 " FROM " + TABLE_BOOKINGS + " b" +
                 " LEFT JOIN " + TABLE_VENUES + " v ON b." + KEY_B_VENUE_ID + " = v." + KEY_VENUE_ID +
-                " WHERE 1=1"; // Start with a condition that's always true
+                " WHERE 1=1";
 
         List<String> selectionArgs = new ArrayList<>();
 
@@ -340,7 +321,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             selectionArgs.add(userEmail);
         }
 
-        // Add optional status and date filters (these remain the same)
+        // Add optional status and date filters
         if (status != null && !status.isEmpty()) {
             query += " AND b." + KEY_BOOKING_STATUS + " = ?";
             selectionArgs.add(status);
@@ -357,11 +338,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(query.toString(), args);
 
-        // --- Cursor processing remains the same ---
         if (cursor.moveToFirst()) {
             do {
                 Booking booking = new Booking();
-                // ... (Set all booking properties: bookingId, venueId, userName, etc.) ...
+                // Set all booking properties
                 booking.setBookingId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_BOOKING_ID)));
                 booking.setVenueId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_B_VENUE_ID)));
                 booking.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_B_USER_ID)));
@@ -377,7 +357,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 booking.setSubmittedDate(cursor.getString(cursor.getColumnIndexOrThrow(KEY_SUBMITTED_DATE)));
 
 
-                // ... (Set joined Venue properties, handling nulls) ...
+                // Set joined Venue properties
                 int venueNameCol = cursor.getColumnIndex(KEY_VENUE_NAME);
                 int locationCol = cursor.getColumnIndex(KEY_LOCATION);
                 int capacityCol = cursor.getColumnIndex(KEY_CAPACITY);
@@ -397,16 +377,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 bookingList.add(booking);
             } while (cursor.moveToNext());
         }
-        // --- End cursor processing ---
 
         cursor.close();
         db.close();
         return bookingList;
     }
 
-    /**
-     * Updates the status of a specific booking.
-     */
+    // Updates the status of a specific booking
     public boolean updateBookingStatus(int bookingId, String newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -422,10 +399,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    /**
-     * Gets the count of bookings for a specific status.
-     * If status is null, gets the total count.
-     */
+    // Gets the count of bookings for a specific status
     public int getBookingCount(String status) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM " + TABLE_BOOKINGS;
@@ -455,7 +429,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(KEY_B_VENUE_ID, venueId);
-        values.put(KEY_B_USER_ID, userId); // Assuming userId is available, else use 0 or fetch later
+        values.put(KEY_B_USER_ID, userId);
         values.put(KEY_USER_NAME, userName);
         values.put(KEY_USER_EMAIL, userEmail);
         values.put(KEY_EVENT_DATE, eventDate);
@@ -464,7 +438,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_EVENT_TYPE, eventType);
         values.put(KEY_TOTAL_PRICE, totalPrice);
         values.put(KEY_SPECIAL_REQUESTS, specialRequests);
-        values.put(KEY_BOOKING_STATUS, BookingsAdapter.STATUS_PENDING); // Default status
+        values.put(KEY_BOOKING_STATUS, BookingsAdapter.STATUS_PENDING);
         values.put(KEY_SUBMITTED_DATE, submittedDate);
 
         long result = db.insert(TABLE_BOOKINGS, null, values);
@@ -472,8 +446,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    // --- We need a way to add test data ---
-    // --- Add this method temporarily to test ---
+    // Method to test the database
     public void addTestData() {
         if (getBookingCount(null) == 0) { // Only add if table is empty
             SQLiteDatabase db = this.getWritableDatabase();
@@ -552,9 +525,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    /**
-     * Adds a new notification to the database.
-     */
+    // Adds a new notification to the database.
     public boolean addNotification(String userEmailOrAdmin, String type, String title, String message, int bookingId, int venueId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -566,9 +537,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_NOTIFICATION_TYPE, type);
         values.put(KEY_NOTIFICATION_TITLE, title);
         values.put(KEY_NOTIFICATION_MESSAGE, message);
-        if (bookingId > 0) values.put(KEY_N_BOOKING_ID, bookingId); // Only add if valid
-        if (venueId > 0) values.put(KEY_N_VENUE_ID, venueId);     // Only add if valid
-        values.put(KEY_IS_READ, 0); // Default to unread
+        if (bookingId > 0) values.put(KEY_N_BOOKING_ID, bookingId);
+        if (venueId > 0) values.put(KEY_N_VENUE_ID, venueId);
+        values.put(KEY_IS_READ, 0);
         values.put(KEY_NOTIFICATION_TIMESTAMP, timestamp);
 
         long result = db.insert(TABLE_NOTIFICATIONS, null, values);
@@ -576,9 +547,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    /**
-     * Gets notifications for a specific user (or admin), optionally filtering by read status.
-     */
+    // Gets notifications for a specific user (or admin), optionally filtering by read status.
     public List<Notification> getNotifications(String userEmailOrAdmin, boolean unreadOnly) {
         List<Notification> notificationList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -615,9 +584,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return notificationList;
     }
 
-    /**
-     * Updates the read status of a single notification.
-     */
+    // Updates the read status of a single notification.
     public boolean updateNotificationReadStatus(int notificationId, boolean isRead) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -633,9 +600,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    /**
-     * Marks all notifications for a user/admin as read.
-     */
+    // Marks all notifications for a user/admin as read.
     public int markAllNotificationsAsRead(String userEmailOrAdmin) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -651,9 +616,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected;
     }
 
-    /**
-     * Deletes a single notification by its ID.
-     */
+    // Deletes a single notification by its ID.
     public boolean deleteNotification(int notificationId) {
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsAffected = db.delete(

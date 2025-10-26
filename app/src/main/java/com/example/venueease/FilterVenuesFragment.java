@@ -45,10 +45,8 @@ public class FilterVenuesFragment extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
 
         try {
-            // Get the listener from the fragment that set us as its target
             listener = (FilterListener) getTargetFragment();
         } catch (ClassCastException e) {
-            // This will now correctly tell you if VenuesFragment forgot to implement
             throw new ClassCastException("Calling fragment must implement FilterListener");
         }
     }
@@ -113,7 +111,6 @@ public class FilterVenuesFragment extends BottomSheetDialogFragment {
         actVenueType.setText(venueTypes[0], false);
         actMinCapacity.setText(capacities[0], false);
         actMaxPrice.setText(prices[0], false);
-        // Apply the cleared filters (which is no filters)
         applyFilters();
     }
 
@@ -136,11 +133,11 @@ public class FilterVenuesFragment extends BottomSheetDialogFragment {
         }
 
         if (venueType.equals("All Types")) {
-            venueType = null; // Use null to signify "All"
+            venueType = null;
         }
 
         if (date.isEmpty()) {
-            date = null; // Use null to signify "Any"
+            date = null;
         }
 
         // Create criteria object

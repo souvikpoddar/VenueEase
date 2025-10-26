@@ -1,7 +1,7 @@
 package com.example.venueease;
 
-import android.content.Context; // Import this
-import android.content.Intent; // Import this
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
-    // Define our fragments
+    // Define fragments
     private VenuesFragment venuesFragment;
     private BookingsFragment bookingsFragment;
     private NotificationsFragment notificationsFragment;
@@ -31,7 +31,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        // Initialize our fragments
+        // Initialize fragments
         venuesFragment = new VenuesFragment();
         bookingsFragment = new BookingsFragment();
         notificationsFragment = new NotificationsFragment();
@@ -82,21 +82,19 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void logoutAdmin() {
-        // 1. Get the session SharedPreferences
+        // Get the session SharedPreferences
         SharedPreferences sessionPrefs = getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
 
-        // 2. Clear all data from this file
+        // Clear all data from this file
         SharedPreferences.Editor editor = sessionPrefs.edit();
         editor.clear();
         editor.apply();
 
-        // 3. Navigate back to LoginActivity
+        // Navigate back to LoginActivity
         Intent intent = new Intent(AdminDashboardActivity.this, LoginActivity.class);
-
-        // 4. Add flags to clear the back stack
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
-        finish(); // Close the AdminDashboardActivity
+        finish();
     }
 }

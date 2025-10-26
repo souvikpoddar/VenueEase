@@ -61,9 +61,6 @@ public class VenueUserAdapter extends RecyclerView.Adapter<VenueUserAdapter.Venu
         notifyDataSetChanged();
     }
 
-    /**
-     * ViewHolder Class
-     */
     public class VenueUserViewHolder extends RecyclerView.ViewHolder {
 
         // Declare all views
@@ -105,25 +102,19 @@ public class VenueUserAdapter extends RecyclerView.Adapter<VenueUserAdapter.Venu
                 ivVenueImage.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder
             }
 
-            // TODO: Add logic for "Available" tag visibility
-            // For now, we'll just show it
             tvVenueAvailable.setVisibility(View.VISIBLE);
 
-            // --- Dynamically add amenities ---
             addAmenities(venue.getAmenities());
 
-            // Set button click listeners
             btnViewDetails.setOnClickListener(v -> listener.onViewDetailsClicked(venue));
             btnBookNow.setOnClickListener(v -> listener.onBookNowClicked(venue));
         }
 
         private void addAmenities(String amenitiesString) {
-            // Clear any old views (except the "+x more" text)
             llAmenitiesContainer.removeAllViews();
 
             if (amenitiesString == null || amenitiesString.isEmpty()) {
                 tvAmenitiesMore.setVisibility(View.GONE);
-                // Optionally add a "No amenities listed" text
                 return;
             }
 

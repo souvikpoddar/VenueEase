@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Just finish this activity to go back to Login
+                // Finish this activity to go back to Login
                 finish();
             }
         });
@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // --- 1. Validation ---
+        // Validation
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Full Name is required");
             etFullName.requestFocus();
@@ -97,26 +97,24 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // --- 2. Check if user already exists ---
+        // Check if user already exists
         if (userAccountsPrefs.contains(email)) {
             etEmail.setError("This email is already registered");
             etEmail.requestFocus();
             return;
         }
 
-        // --- 3. Save New User ---
+        // Save New User
         SharedPreferences.Editor editor = userAccountsPrefs.edit();
 
-        // We use the email as the key and store the password
+        // Use the email as the key and store the password
         editor.putString(email, password);
 
-        // We can also store other details using the email as a prefix
         editor.putString(email + "_fullname", fullName);
         editor.putString(email + "_phone", phone);
 
         editor.apply();
 
-        // --- 4. Finish up ---
         Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
         // Go back to the Login activity

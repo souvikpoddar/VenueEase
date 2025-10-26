@@ -41,7 +41,6 @@ public class PaymentOptionsFragment extends BottomSheetDialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // Ensure the hosting fragment or activity implements the listener
         if (getParentFragment() instanceof PaymentOptionListener) {
             listener = (PaymentOptionListener) getParentFragment();
         } else if (context instanceof PaymentOptionListener) {
@@ -74,7 +73,6 @@ public class PaymentOptionsFragment extends BottomSheetDialogFragment {
         if (bookingToPay != null) {
             populateSummary();
         } else {
-            // Handle error - shouldn't happen if newInstance is used
             dismiss();
             return;
         }
@@ -86,7 +84,7 @@ public class PaymentOptionsFragment extends BottomSheetDialogFragment {
         });
         cardUpi.setOnClickListener(v -> {
             if (listener != null) listener.onPaymentOptionSelected("UPI", bookingToPay);
-            dismiss(); // Close this dialog
+            dismiss();
         });
         cardCard.setOnClickListener(v -> {
             if (listener != null) listener.onPaymentOptionSelected("CARD", bookingToPay);
@@ -115,24 +113,20 @@ public class PaymentOptionsFragment extends BottomSheetDialogFragment {
         String prompt = String.format(Locale.getDefault(),
                 "Complete payment for your booking at %s on %s. Choose your preferred payment method.",
                 bookingToPay.getVenue().getName(),
-                bookingToPay.getEventDate()); // Assuming date format is user-friendly
+                bookingToPay.getEventDate());
         tvPaymentPrompt.setText(prompt);
 
         tvSummaryVenue.setText(bookingToPay.getVenue().getName());
-        tvSummaryDate.setText(bookingToPay.getEventDate()); // Assuming format is user-friendly
+        tvSummaryDate.setText(bookingToPay.getEventDate());
         tvSummaryTime.setText(String.format("%s - %s", bookingToPay.getStartTime(), bookingToPay.getEndTime()));
         tvSummaryEvent.setText(bookingToPay.getEventType());
         tvSummaryAmount.setText(String.format(Locale.getDefault(), "₹%.0f", bookingToPay.getTotalPrice()));
     }
 
-    // Handle closing the dialog via swipe or back press
     @Override
     public void onDismiss(@NonNull android.content.DialogInterface dialog) {
         super.onDismiss(dialog);
-        // Notify listener if it wasn't triggered by selecting an option
         if (listener != null) {
-            // Maybe add a flag to check if an option was selected before calling this
-            // listener.onPaymentCancelled();
         }
     }
 }
