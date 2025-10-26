@@ -9,10 +9,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
+import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.google.android.material.button.MaterialButton;
 
@@ -31,11 +35,23 @@ public class VenueDetailsActivity extends AppCompatActivity {
     private LinearLayout llDetailAmenitiesContainer;
     private MaterialButton btnBookThisVenue;
 
+    private ActivityResultLauncher<Intent> bookVenueLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venue_details);
+
+        bookVenueLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // When returning from BookVenueActivity, just finish this details activity too
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        finish(); // Close VenueDetailsActivity after successful booking
+                    }
+                    // If RESULT_CANCELED, just stay on the details page
+                }
+        );
 
         // 1. Setup Toolbar
         toolbar = findViewById(R.id.toolbar_venue_details);
@@ -69,7 +85,7 @@ public class VenueDetailsActivity extends AppCompatActivity {
             intent.putExtra("VENUE_TO_BOOK", currentVenue); // Venue class must be Serializable
 
             // Start the activity
-            startActivity(intent);
+            bookVenueLauncher.launch(intent);
         });
     }
 

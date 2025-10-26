@@ -10,16 +10,21 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +48,8 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
     private String mCurrentQuery = "";
     private FilterCriteria mCurrentCriteria = null;
 
+    private ActivityResultLauncher<Intent> bookVenueLauncher;
+
     // Required empty public constructor
     public UserVenuesFragment() {}
 
@@ -52,6 +59,32 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_venues, container, false);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // 2. Initialize the launcher in onCreate
+        bookVenueLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Show confirmation Snackbar
+                        if (getView() != null) { // Ensure fragment view is available
+                            Snackbar snackbar = Snackbar.make(getView(), "Booking request submitted successfully!", Snackbar.LENGTH_LONG);
+                            // Anchor it to the bottom nav bar
+                            View anchorView = getActivity().findViewById(R.id.user_bottom_navigation);
+                            if (anchorView != null) {
+                                snackbar.setAnchorView(anchorView);
+                            }
+                            snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_approved)); // Green color
+                            snackbar.show();
+                        }
+                        // Optionally refresh something here if needed
+                    }
+                }
+        );
     }
 
     @Override
@@ -194,6 +227,6 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
         intent.putExtra("VENUE_TO_BOOK", venue); // Venue class must be Serializable
 
         // Start the activity
-        startActivity(intent);
+        bookVenueLauncher.launch(intent);
     }
 }

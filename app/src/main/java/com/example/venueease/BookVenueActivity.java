@@ -3,11 +3,16 @@ package com.example.venueease;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.app.DatePickerDialog;
+import android.app.Activity;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.DatePicker;
 import android.widget.ArrayAdapter;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,10 +22,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class BookVenueActivity extends AppCompatActivity {
 
@@ -34,10 +43,15 @@ public class BookVenueActivity extends AppCompatActivity {
     private TextInputLayout tilGuestCount;
     private MaterialButton btnSubmitBooking;
 
+    private DatabaseHelper dbHelper; // Add DB Helper
+    private String selectedDbDate = null; // Variable to store DB-formatted date
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_venue);
+
+        dbHelper = new DatabaseHelper(this); // Initialize DB Helper
 
         // 1. Setup Toolbar
         toolbar = findViewById(R.id.toolbar_book_venue);
@@ -56,7 +70,6 @@ public class BookVenueActivity extends AppCompatActivity {
         // 4. Populate UI if venue exists
         if (venueToBook != null) {
             populateVenueInfo();
-            // TODO: Setup dropdowns and pickers
             setupDateTimePickers();
             setupTimeDropdowns();
             setupEventTypeDropdown();
@@ -98,12 +111,152 @@ public class BookVenueActivity extends AppCompatActivity {
     }
 
     private void handleSubmitBooking() {
-        // TODO: Validate all fields
-        // TODO: Get user info (from SharedPreferences)
-        // TODO: Create Booking object
-        // TODO: Save to database using DatabaseHelper
-        // TODO: Show confirmation and finish
-        Toast.makeText(this, "Submit Booking Clicked", Toast.LENGTH_SHORT).show();
+        // --- 1. Validation ---
+        if (!validateBookingInput()) {
+            return; // Stop if validation fails
+        }
+
+        // --- 2. Get Input Data ---
+        String startTime = actStartTime.getText().toString();
+        String endTime = actEndTime.getText().toString();
+        String eventType = actEventType.getText().toString();
+        int guestCount = Integer.parseInt(etGuestCount.getText().toString().trim());
+        String specialRequests = etSpecialRequests.getText().toString().trim();
+
+        // --- 3. Get User Data (from Session SharedPreferences) ---
+        SharedPreferences sessionPrefs = getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
+        String userEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, "unknown@example.com");
+
+        SharedPreferences userAccountsPrefs = getSharedPreferences(LoginActivity.USER_ACCOUNTS_PREFS, Context.MODE_PRIVATE);
+        String userName = userAccountsPrefs.getString(userEmail + "_fullname", "Unknown User");
+        // We don't have user IDs yet, use 0 as a placeholder
+        int userId = 0;
+
+        // --- 4. Calculate Price (Simple version: hours * price/hour) ---
+        double totalPrice = calculateTotalPrice(startTime, endTime, venueToBook.getPrice());
+        if (totalPrice < 0) {
+            Toast.makeText(this, "End time must be after start time.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // --- 5. Get Current Date for 'submitted_date' ---
+        SimpleDateFormat submittedDateFormat = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
+        String submittedDate = submittedDateFormat.format(new Date());
+
+        // --- 6. Save to Database ---
+        boolean success = dbHelper.addBooking(
+                venueToBook.getId(), userId, userName, userEmail,
+                selectedDbDate, startTime, endTime, eventType,
+                totalPrice, specialRequests, submittedDate
+        );
+
+        // --- 7. Handle Result ---
+        if (success) {
+            Toast.makeText(this, "Booking request submitted successfully!", Toast.LENGTH_SHORT).show();
+            // Send RESULT_OK back to the calling fragment/activity
+            setResult(Activity.RESULT_OK);
+            finish(); // Close this activity
+        } else {
+            Toast.makeText(this, "Failed to submit booking request.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Validates all the booking form fields.
+     */
+    private boolean validateBookingInput() {
+        // Reset errors
+        etEventDate.setError(null);
+        actStartTime.setError(null);
+        actEndTime.setError(null);
+        actEventType.setError(null);
+        tilGuestCount.setError(null); // Use TextInputLayout for error on guest count
+
+        // Get values
+        String date = etEventDate.getText().toString(); // Display date is fine for check
+        String startTime = actStartTime.getText().toString();
+        String endTime = actEndTime.getText().toString();
+        String eventType = actEventType.getText().toString();
+        String guestStr = etGuestCount.getText().toString().trim();
+
+        // Check empty fields
+        if (TextUtils.isEmpty(date) || selectedDbDate == null) {
+            etEventDate.setError("Event Date is required");
+            etEventDate.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(startTime)) {
+            actStartTime.setError("Start Time is required");
+            actStartTime.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(endTime)) {
+            actEndTime.setError("End Time is required");
+            actEndTime.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(eventType)) {
+            actEventType.setError("Event Type is required");
+            actEventType.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(guestStr)) {
+            tilGuestCount.setError("Number of Guests is required");
+            etGuestCount.requestFocus();
+            return false;
+        }
+
+        // Check guest count validity
+        try {
+            int guests = Integer.parseInt(guestStr);
+            if (guests <= 0) {
+                tilGuestCount.setError("Guest count must be positive");
+                etGuestCount.requestFocus();
+                return false;
+            }
+            if (guests > venueToBook.getCapacity()) {
+                tilGuestCount.setError("Guest count exceeds venue capacity (" + venueToBook.getCapacity() + ")");
+                etGuestCount.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            tilGuestCount.setError("Invalid number");
+            etGuestCount.requestFocus();
+            return false;
+        }
+
+        // TODO: Add validation to ensure end time is after start time
+
+        return true;
+    }
+
+    /**
+     * Calculates the total price based on duration and hourly rate.
+     * Returns -1 if end time is before start time.
+     */
+    private double calculateTotalPrice(String startTime, String endTime, double hourlyRate) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        try {
+            Date start = timeFormat.parse(startTime);
+            Date end = timeFormat.parse(endTime);
+
+            // Calculate duration in milliseconds
+            long durationMillis = end.getTime() - start.getTime();
+
+            if (durationMillis <= 0) {
+                return -1; // End time is not after start time
+            }
+
+            // Convert duration to hours (as a double)
+            double durationHours = (double) durationMillis / TimeUnit.HOURS.toMillis(1);
+
+            // Calculate total price
+            return durationHours * hourlyRate;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0; // Or handle error appropriately
+        }
     }
 
     // Handle Toolbar back arrow
@@ -140,9 +293,7 @@ public class BookVenueActivity extends AppCompatActivity {
                         String dbDate = dbFormat.format(selectedDateCal.getTime());
 
                         etEventDate.setText(displayDate);
-                        // You might want to store the dbDate in a member variable
-                        // to use when submitting the booking
-                        // this.selectedDbDate = dbDate;
+                        this.selectedDbDate = dbDate;
 
                     }, year, month, day);
 

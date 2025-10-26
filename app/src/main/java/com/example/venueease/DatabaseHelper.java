@@ -371,6 +371,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public boolean addBooking(int venueId, int userId, String userName, String userEmail,
+                              String eventDate, String startTime, String endTime,
+                              String eventType, double totalPrice, String specialRequests,
+                              String submittedDate) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_B_VENUE_ID, venueId);
+        values.put(KEY_B_USER_ID, userId); // Assuming userId is available, else use 0 or fetch later
+        values.put(KEY_USER_NAME, userName);
+        values.put(KEY_USER_EMAIL, userEmail);
+        values.put(KEY_EVENT_DATE, eventDate);
+        values.put(KEY_START_TIME, startTime);
+        values.put(KEY_END_TIME, endTime);
+        values.put(KEY_EVENT_TYPE, eventType);
+        values.put(KEY_TOTAL_PRICE, totalPrice);
+        values.put(KEY_SPECIAL_REQUESTS, specialRequests);
+        values.put(KEY_BOOKING_STATUS, BookingsAdapter.STATUS_PENDING); // Default status
+        values.put(KEY_SUBMITTED_DATE, submittedDate);
+
+        long result = db.insert(TABLE_BOOKINGS, null, values);
+        db.close();
+        return result != -1;
+    }
+
     // --- We need a way to add test data ---
     // --- Add this method temporarily to test ---
     public void addTestData() {
