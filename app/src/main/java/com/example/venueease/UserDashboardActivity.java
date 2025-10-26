@@ -25,7 +25,7 @@ public class UserDashboardActivity extends AppCompatActivity {
     // We can add these later
     private UserBookingsFragment userBookingsFragment;
     private NotificationsFragment userNotificationsFragment;
-    // private UserProfileFragment userProfileFragment;
+    private UserProfileFragment userProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class UserDashboardActivity extends AppCompatActivity {
         userVenuesFragment = new UserVenuesFragment();
         userBookingsFragment = new UserBookingsFragment();
         userNotificationsFragment = new NotificationsFragment();
+        userProfileFragment = new UserProfileFragment();
 
         bottomNavigationView = findViewById(R.id.user_bottom_navigation);
 
@@ -58,10 +59,7 @@ public class UserDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_notifications) {
                     selectedFragment = userNotificationsFragment;
                 } else if (itemId == R.id.user_nav_profile) {
-                    // selectedFragment = userProfileFragment; // (coming soon)
-                    Toast.makeText(UserDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                    logoutUser();
-                    return false;
+                    selectedFragment = userProfileFragment;
                 }
 
                 if (selectedFragment != null) {
