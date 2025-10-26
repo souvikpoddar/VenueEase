@@ -195,65 +195,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    // ... (inside DatabaseHelper.java)
-
     /**
-     * Get all venues that match a search query and filter criteria
+     * Get venues matching search query and filter criteria, including date availability.
+     * Excludes venues that have a Pending, Approved, or Confirmed booking on the specified date.
      */
     public List<Venue> getFilteredVenues(String nameOrLocationQuery, FilterCriteria criteria) {
         List<Venue> venueList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Base query
-        StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_VENUES + " WHERE 1=1");
+        // Base query - selects venues
+        StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_VENUES + " v WHERE 1=1");
         List<String> selectionArgs = new ArrayList<>();
 
-        // Add search query for EITHER name OR location
+        // Add search query for name OR location
         if (nameOrLocationQuery != null && !nameOrLocationQuery.isEmpty()) {
-            query.append(" AND (")
-                    .append(KEY_VENUE_NAME).append(" LIKE ? OR ")
+            query.append(" AND (v.").append(KEY_VENUE_NAME).append(" LIKE ? OR v.")
                     .append(KEY_LOCATION).append(" LIKE ?)");
-
-            // Add the argument twice, once for name and once for location
             selectionArgs.add("%" + nameOrLocationQuery + "%");
             selectionArgs.add("%" + nameOrLocationQuery + "%");
         }
 
-        // Add filter criteria
+        // Add filter criteria (Type, Capacity, Price)
+        String filterDate = null; // Store date separately for availability check
         if (criteria != null) {
             if (criteria.getVenueType() != null) {
-                query.append(" AND ").append(KEY_VENUE_TYPE).append(" = ?");
+                query.append(" AND v.").append(KEY_VENUE_TYPE).append(" = ?");
                 selectionArgs.add(criteria.getVenueType());
             }
             if (criteria.getMinCapacity() != FilterCriteria.ANY_CAPACITY) {
-                query.append(" AND ").append(KEY_CAPACITY).append(" >= ?");
+                query.append(" AND v.").append(KEY_CAPACITY).append(" >= ?");
                 selectionArgs.add(String.valueOf(criteria.getMinCapacity()));
             }
             if (criteria.getMaxPrice() != FilterCriteria.ANY_PRICE) {
-                query.append(" AND ").append(KEY_PRICE_PER_HOUR).append(" <= ?");
+                query.append(" AND v.").append(KEY_PRICE_PER_HOUR).append(" <= ?");
                 selectionArgs.add(String.valueOf(criteria.getMaxPrice()));
             }
-
-            // TODO: Implement Date filter logic
-            // This requires a check against the 'Bookings' table to see if a venue
-            // is available on that date. We will add this logic later.
+            // --- Store the date filter if present ---
             if (criteria.getDate() != null) {
-                Log.w("DatabaseHelper", "Date filter is not yet implemented.");
+                filterDate = criteria.getDate(); // Keep the date from criteria
+                // Note: The date format here MUST match the format used when saving bookings
+                // We previously used "E, MMM d, yyyy" format from the date picker
+                Log.d("DatabaseHelper", "Filtering for availability on date: " + filterDate);
             }
         }
 
-        // Convert List<String> to String[]
-        String[] args = new String[selectionArgs.size()];
-        selectionArgs.toArray(args);
+        // --- Add Date Availability Check using a Subquery ---
+        if (filterDate != null) {
+            query.append(" AND NOT EXISTS ("); // Venue should NOT EXIST in bookings if booked
+            query.append("SELECT 1 FROM ").append(TABLE_BOOKINGS).append(" b ");
+            query.append("WHERE b.").append(KEY_B_VENUE_ID).append(" = v.").append(KEY_VENUE_ID); // Link to the outer venue
+            query.append(" AND b.").append(KEY_EVENT_DATE).append(" = ?"); // Check the date
+            query.append(" AND b.").append(KEY_BOOKING_STATUS).append(" IN (?, ?, ?)"); // Check relevant statuses
+            query.append(")");
 
-        // Execute query
+            // Add arguments for the subquery
+            selectionArgs.add(filterDate); // Argument for date
+            selectionArgs.add(BookingsAdapter.STATUS_PENDING);   // Argument for status 1
+            selectionArgs.add(BookingsAdapter.STATUS_APPROVED);  // Argument for status 2
+            selectionArgs.add(BookingsAdapter.STATUS_CONFIRMED); // Argument for status 3
+        }
+
+        // --- Execute Query ---
+        String[] args = selectionArgs.toArray(new String[0]);
+        Log.d("DatabaseHelper", "Final Venue Query: " + query.toString());
+        Log.d("DatabaseHelper", "Final Venue Args: " + selectionArgs.toString());
+
         Cursor cursor = db.rawQuery(query.toString(), args);
+        Log.d("DatabaseHelper", "Venue Cursor count: " + cursor.getCount());
 
-        // Loop through all rows and add to list
+        // --- Process Results ---
         if (cursor.moveToFirst()) {
             do {
                 Venue venue = new Venue();
-                // (Set all properties: id, name, location, etc.)
                 venue.setId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_VENUE_ID)));
                 venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
                 venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
