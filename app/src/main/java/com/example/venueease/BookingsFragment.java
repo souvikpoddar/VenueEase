@@ -1,6 +1,7 @@
 package com.example.venueease;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 public class BookingsFragment extends Fragment implements BookingsAdapter.OnBookingActionListener {
 
@@ -163,14 +166,61 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
 
     private void showDatePicker() {
         Calendar c = Calendar.getInstance();
-        new DatePickerDialog(getContext(), (datePicker, year, month, day) -> {
-            // Format date as "dd / mm / yyyy"
-            String selectedDate = String.format(Locale.getDefault(), "%02d / %02d / %04d", day, month + 1, year);
-            tvFilterDateValue.setText(selectedDate);
-            mCurrentDateFilter = selectedDate; // Set the filter
-            loadBookings();
-        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH))
-                .show();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                (datePicker, y, m, d) -> {
+                    // --- THIS IS THE UPDATED LOGIC ---
+
+                    // 1. Create a Calendar object for the selected date
+                    Calendar selectedCalendar = Calendar.getInstance();
+                    selectedCalendar.set(y, m, d);
+
+                    // 2. Format the date for the UI ("26 / 10 / 2025")
+                    String uiDateString = String.format(Locale.getDefault(), "%02d / %02d / %04d", d, m + 1, y);
+
+                    // 3. Format the date for the DB query ("Sun, Oct 26, 2025")
+                    // This MUST match the format in your addTestData() method
+                    SimpleDateFormat dbFormat = new SimpleDateFormat("E, MMM d, yyyy", Locale.getDefault());
+                    String dbDateString = dbFormat.format(selectedCalendar.getTime());
+
+                    // 4. Set the UI text and the filter value
+                    tvFilterDateValue.setText(uiDateString);
+                    tvFilterDateValue.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
+
+                    mCurrentDateFilter = dbDateString; // Set the filter to the DB format
+
+                    loadBookings(); // Refresh the list
+
+                    // --- END OF UPDATED LOGIC ---
+                },
+                year, month, day
+        );
+
+        // Add the "Clear Filter" button
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Clear Filter", (dialog, which) -> {
+            clearDateFilter();
+        });
+
+        // Add the "Cancel" button
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        datePickerDialog.show();
+    }
+
+    /**
+     * Clears the date filter and reloads the bookings.
+     */
+    private void clearDateFilter() {
+        mCurrentDateFilter = null; // Clear the filter state
+        tvFilterDateValue.setText("dd / mm / yyyy"); // Reset the label
+        tvFilterDateValue.setTextColor(ContextCompat.getColor(getContext(), android.R.color.darker_gray));
+        loadBookings(); // Refresh the list
     }
 
     // --- Adapter Action Callbacks ---
