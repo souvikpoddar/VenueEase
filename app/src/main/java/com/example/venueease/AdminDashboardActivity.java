@@ -24,7 +24,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private VenuesFragment venuesFragment;
     private BookingsFragment bookingsFragment;
     private NotificationsFragment notificationsFragment;
-    // private ProfileFragment profileFragment;
+    private AdminProfileFragment adminProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         venuesFragment = new VenuesFragment();
         bookingsFragment = new BookingsFragment();
         notificationsFragment = new NotificationsFragment();
+        adminProfileFragment = new AdminProfileFragment();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -57,10 +58,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_notifications) {
                     selectedFragment = notificationsFragment;
                 } else if (itemId == R.id.nav_profile) {
-                    // selectedFragment = profileFragment; // Coming soon
-                    Toast.makeText(AdminDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                    logoutAdmin();
-                    return false; // Return false to not select the item yet
+                    selectedFragment = adminProfileFragment;
                 }
 
                 if (selectedFragment != null) {
