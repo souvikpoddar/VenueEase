@@ -86,7 +86,6 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             });
 
             btnDeleteVenue.setOnClickListener(v -> {
-                // TODO: Implement delete later
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onDeleteClicked(venueList.get(position));
