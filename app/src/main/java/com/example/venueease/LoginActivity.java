@@ -1,5 +1,6 @@
 package com.example.venueease;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,15 +9,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity; // Import this
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.activity.result.ActivityResultLauncher; // Import this
-import androidx.activity.result.contract.ActivityResultContracts; // Import this
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.snackbar.Snackbar; // Import this
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,38 +24,40 @@ public class LoginActivity extends AppCompatActivity {
     private static final String ADMIN_EMAIL = "admin@venueease.com";
     private static final String ADMIN_PASSWORD = "admin";
 
-    // SharedPreferences constants
-    public static final String PREFS_NAME = "UserPrefs";
+    // SharedPreferences for the CURRENT SESSION
+    public static final String SESSION_PREFS_NAME = "UserPrefs";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    public static final String KEY_USER_ROLE = "user_role"; // "admin" or "user"
+
+    // SharedPreferences for ALL SAVED USER ACCOUNTS
+    public static final String USER_ACCOUNTS_PREFS = "UserAccounts";
 
     private TextInputEditText etEmail, etPassword;
     private MaterialButton btnSignIn;
     private TextView tvForgotPassword, tvSignUp;
 
-    private SharedPreferences sharedPreferences;
-
+    private SharedPreferences sessionPrefs;
+    private SharedPreferences userAccountsPrefs;
     private ActivityResultLauncher<Intent> resetPasswordLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        // Initialize BOTH SharedPreferences
+        sessionPrefs = getSharedPreferences(SESSION_PREFS_NAME, Context.MODE_PRIVATE);
+        userAccountsPrefs = getSharedPreferences(USER_ACCOUNTS_PREFS, Context.MODE_PRIVATE);
 
         // 1. CHECK IF ALREADY LOGGED IN
         checkLoginStatus();
 
         setContentView(R.layout.activity_login);
 
-        // 2. Initialize the launcher
         resetPasswordLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // This is the callback
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // Show the Snackbar if the result is OK
                         View rootLayout = findViewById(R.id.login_root_layout);
                         Snackbar.make(rootLayout, "Password reset link sent to your email!", Snackbar.LENGTH_LONG).show();
                     }
@@ -73,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // We will call a function to handle the login logic
                 handleLogin();
             }
         });
@@ -92,64 +93,89 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-                // Launch using the new launcher instead of startActivity()
                 resetPasswordLauncher.launch(intent);
             }
         });
     }
 
+    /**
+     * Checks session status and navigates to the correct dashboard based on role.
+     */
     private void checkLoginStatus() {
-        // Check if the 'isLoggedIn' flag is true in SharedPreferences
-        if (sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false)) {
-            // User is already logged in, go directly to Dashboard
-            navigateToAdminDashboard();
+        if (sessionPrefs.getBoolean(KEY_IS_LOGGED_IN, false)) {
+            // User is logged in, check their role
+            String role = sessionPrefs.getString(KEY_USER_ROLE, "user"); // Default to "user"
+
+            if (role.equals("admin")) {
+                navigateToAdminDashboard();
+            } else {
+                navigateToUserDashboard();
+            }
         }
-        // If false, the app will just continue to show the login screen (setContentView)
     }
 
+    /**
+     * Handles login logic for both Admin and registered Users.
+     */
     private void handleLogin() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // Basic Validation
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError("Email is required");
-            etEmail.requestFocus();
-            return;
-        }
+        if (TextUtils.isEmpty(email)) { /* ... validation ... */ return; }
+        if (TextUtils.isEmpty(password)) { /* ... validation ... */ return; }
 
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Password is required");
-            etPassword.requestFocus();
-            return;
-        }
-
-        // 3. VALIDATE CREDENTIALS
+        // --- 1. Check for ADMIN ---
         if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
-            // Credentials are correct
-
-            // 4. SAVE TO SHAREDPREFERENCES
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(KEY_IS_LOGGED_IN, true);
-            editor.putString(KEY_EMAIL, email);
-            editor.apply(); // Use apply() for asynchronous save
-
-            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-
-            // 5. NAVIGATE TO DASHBOARD
+            // Admin login successful
+            saveSession("admin", email);
+            Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
             navigateToAdminDashboard();
+            return; // Stop here
+        }
 
+        // --- 2. Check for USER ---
+        if (userAccountsPrefs.contains(email)) {
+            // User email exists, check password
+            String savedPassword = userAccountsPrefs.getString(email, null);
+
+            if (password.equals(savedPassword)) {
+                // User login successful
+                saveSession("user", email);
+                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                navigateToUserDashboard();
+            } else {
+                // Password incorrect
+                Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_LONG).show();
+            }
         } else {
-            // Invalid credentials
+            // Email not found in admin or user accounts
             Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * Saves the current user's session details
+     */
+    private void saveSession(String role, String email) {
+        SharedPreferences.Editor editor = sessionPrefs.edit();
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_USER_ROLE, role);
+        editor.apply();
+    }
+
     private void navigateToAdminDashboard() {
         Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
-        // Add flags to clear the back stack
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish(); // Call finish() to remove LoginActivity from the back stack
+        finish();
+    }
+
+    private void navigateToUserDashboard() {
+        // You need to create this Activity
+        Intent intent = new Intent(LoginActivity.this, UserDashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

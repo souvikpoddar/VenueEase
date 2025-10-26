@@ -90,17 +90,16 @@ public class VenuesFragment extends Fragment
         // Add Venue Button
         btnAddVenue.setOnClickListener(v -> {
             AddVenueFragment addVenueFragment = new AddVenueFragment();
-
-            // Tell the dialog that 'this' (VenuesFragment) is its target/listener
             addVenueFragment.setTargetFragment(VenuesFragment.this, 0);
-
             addVenueFragment.show(getParentFragmentManager(), addVenueFragment.getTag());
         });
 
         // Filter Button
         btnFilter.setOnClickListener(v -> {
             FilterVenuesFragment filterFragment = new FilterVenuesFragment();
-            // Use getParentFragmentManager()
+            // We need to set the target fragment for this one too
+            // so we can get the results back.
+            filterFragment.setTargetFragment(VenuesFragment.this, 0);
             filterFragment.show(getParentFragmentManager(), filterFragment.getTag());
         });
 
@@ -115,9 +114,25 @@ public class VenuesFragment extends Fragment
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (!newText.isEmpty()) {
+                // --- THIS IS THE UPDATED LOGIC ---
+
+                // 1. Check if the new text is from a chip
+                boolean isFromChip = false;
+                for (int i = 0; i < chipGroupLocations.getChildCount(); i++) {
+                    Chip chip = (Chip) chipGroupLocations.getChildAt(i);
+                    if (chip.getText().toString().equals(newText)) {
+                        isFromChip = true;
+                        break;
+                    }
+                }
+
+                // 2. Only clear the chip check if the user is TYPING
+                // (i.e., the text is not from a chip)
+                if (!isFromChip && !newText.isEmpty()) {
                     chipGroupLocations.clearCheck();
                 }
+
+                // 3. Load results
                 mCurrentQuery = newText;
                 loadVenuesFromDb();
                 return true;
@@ -127,8 +142,10 @@ public class VenuesFragment extends Fragment
         // Location Chips
         chipGroupLocations.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) {
+                // User deselected a chip, clear the search
                 searchView.setQuery("", true);
             } else {
+                // User selected a chip, set the search
                 Chip selectedChip = group.findViewById(checkedIds.get(0));
                 if (selectedChip != null) {
                     searchView.setQuery(selectedChip.getText().toString(), true);
