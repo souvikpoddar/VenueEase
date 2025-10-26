@@ -41,13 +41,21 @@ public class FilterVenuesFragment extends BottomSheetDialogFragment {
     private final String[] prices = {"Any price", "Under ₹500/hr", "Under ₹1000/hr", "Under ₹2000/hr"};
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            // Get the listener from the fragment that set us as its target
+            listener = (FilterListener) getTargetFragment();
+        } catch (ClassCastException e) {
+            // This will now correctly tell you if VenuesFragment forgot to implement
+            throw new ClassCastException("Calling fragment must implement FilterListener");
+        }
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        try {
-            listener = (FilterListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement FilterListener");
-        }
     }
 
     @Nullable
