@@ -1,5 +1,6 @@
 package com.example.venueease;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -61,8 +62,14 @@ public class VenueDetailsActivity extends AppCompatActivity {
 
         // 5. Setup Book Button Listener
         btnBookThisVenue.setOnClickListener(v -> {
-            // TODO: Navigate to the Booking Screen, passing the currentVenue
-            Toast.makeText(this, "Book This Venue clicked for " + currentVenue.getName(), Toast.LENGTH_SHORT).show();
+            // Create an Intent to start BookVenueActivity
+            Intent intent = new Intent(VenueDetailsActivity.this, BookVenueActivity.class);
+
+            // Pass the current Venue object
+            intent.putExtra("VENUE_TO_BOOK", currentVenue); // Venue class must be Serializable
+
+            // Start the activity
+            startActivity(intent);
         });
     }
 

@@ -187,7 +187,13 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
 
     @Override
     public void onBookNowClicked(Venue venue) {
-        // TODO: Implement navigation to Booking page
-        Toast.makeText(getContext(), "Book Now for " + venue.getName(), Toast.LENGTH_SHORT).show();
+        // Create an Intent to start BookVenueActivity
+        Intent intent = new Intent(getContext(), BookVenueActivity.class);
+
+        // Pass the selected Venue object
+        intent.putExtra("VENUE_TO_BOOK", venue); // Venue class must be Serializable
+
+        // Start the activity
+        startActivity(intent);
     }
 }
