@@ -16,9 +16,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -229,8 +231,27 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     public void onApprove(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_APPROVED);
         if (success) {
-            Toast.makeText(getContext(), "Booking Approved", Toast.LENGTH_SHORT).show();
-            // Refresh both the list and the summary cards
+            // --- New Snackbar Logic ---
+
+            // 1. Get the BottomNavigationView from the activity to use as an anchor
+            View anchorView = getActivity().findViewById(R.id.bottom_navigation);
+
+            // 2. Create the dynamic message
+            String message = String.format("%s's booking for %s has been approved.",
+                    booking.getUserName(),
+                    booking.getVenue().getName());
+
+            // 3. Create and customize the Snackbar
+            Snackbar snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(anchorView); // This makes it appear ABOVE the nav bar
+
+            // Set the green "Approved" color
+            snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_approved));
+            snackbar.show();
+
+            // --- End of New Logic ---
+
+            // Refresh the UI
             loadBookings();
             updateSummaryCards();
         } else {
@@ -242,8 +263,29 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     public void onReject(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_REJECTED);
         if (success) {
-            Toast.makeText(getContext(), "Booking Rejected", Toast.LENGTH_SHORT).show();
-            // Refresh both the list and the summary cards
+            // --- New Snackbar Logic ---
+
+            // 1. Get the anchor view
+            View anchorView = getActivity().findViewById(R.id.bottom_navigation);
+
+            // 2. Create the dynamic message
+            String message = String.format("%s's booking request for %s has been rejected.",
+                    booking.getUserName(),
+                    booking.getVenue().getName());
+
+            // 3. Create and customize the Snackbar
+            Snackbar snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(anchorView);
+
+            // We'll use the default dark color for "Rejected" as shown in your screenshot
+            // (If you wanted it red, you could add:
+            // snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_rejected));
+
+            snackbar.show();
+
+            // --- End of New Logic ---
+
+            // Refresh the UI
             loadBookings();
             updateSummaryCards();
         } else {
