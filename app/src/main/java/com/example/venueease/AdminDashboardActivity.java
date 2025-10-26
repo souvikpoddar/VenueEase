@@ -1,5 +1,8 @@
 package com.example.venueease;
 
+import android.content.Context; // Import this
+import android.content.Intent; // Import this
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -58,6 +61,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_profile) {
                     // selectedFragment = profileFragment; // Coming soon
                     Toast.makeText(AdminDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
+                    logoutAdmin();
                     return false; // Return false to not select the item yet
                 }
 
@@ -79,5 +83,24 @@ public class AdminDashboardActivity extends AppCompatActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
+    }
+
+    private void logoutAdmin() {
+        // 1. Get the session SharedPreferences
+        SharedPreferences sessionPrefs = getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
+
+        // 2. Clear all data from this file
+        SharedPreferences.Editor editor = sessionPrefs.edit();
+        editor.clear();
+        editor.apply();
+
+        // 3. Navigate back to LoginActivity
+        Intent intent = new Intent(AdminDashboardActivity.this, LoginActivity.class);
+
+        // 4. Add flags to clear the back stack
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish(); // Close the AdminDashboardActivity
     }
 }

@@ -1,6 +1,8 @@
 package com.example.venueease;
 
-import android.content.SharedPreferences;
+import android.content.Context; // Import this
+import android.content.Intent; // Import this
+import android.content.SharedPreferences; // Import this
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -61,6 +63,7 @@ public class UserDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_profile) {
                     // selectedFragment = userProfileFragment; // (coming soon)
                     Toast.makeText(UserDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
+                    logoutUser();
                     return false;
                 }
 
@@ -82,5 +85,24 @@ public class UserDashboardActivity extends AppCompatActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.user_fragment_container, fragment);
         transaction.commit();
+    }
+
+    private void logoutUser() {
+        // 1. Get the session SharedPreferences
+        SharedPreferences sessionPrefs = getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
+
+        // 2. Clear all data from this file
+        SharedPreferences.Editor editor = sessionPrefs.edit();
+        editor.clear();
+        editor.apply();
+
+        // 3. Navigate back to LoginActivity
+        Intent intent = new Intent(UserDashboardActivity.this, LoginActivity.class);
+
+        // 4. Add flags to clear the back stack
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish(); // Close the UserDashboardActivity
     }
 }
