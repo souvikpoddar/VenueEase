@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Complete Payment"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
+        <ImageButton
+            android:id="@+id/btn_close_payment_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="Close"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_payment_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Complete payment for your booking at Riverside Banquet on 2024-12-20. Choose your preferred payment method."
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="8dp"/>
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:progress="25"
+        android:max="100"/>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#DDD"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Booking Summary"
+                android:drawableStart="@drawable/ic_check_circle"
+                android:drawablePadding="8dp"
+                app:drawableTint="@color/text_color_approved"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <RelativeLayout android:layout_marginBottom="8dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Venue:" android:layout_alignParentStart="true"/>
+                <TextView android:id="@+id/tv_summary_venue" tools:text="Riverside Banquet" android:layout_alignParentEnd="true" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_marginBottom="8dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Date:" android:layout_alignParentStart="true"/>
+                <TextView android:id="@+id/tv_summary_date" tools:text="2024-12-20" android:layout_alignParentEnd="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_marginBottom="8dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Time:" android:layout_alignParentStart="true"/>
+                <TextView android:id="@+id/tv_summary_time" tools:text="18:00 - 23:00" android:layout_alignParentEnd="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Event Type:" android:layout_alignParentStart="true"/>
+                <TextView android:id="@+id/tv_summary_event" tools:text="Wedding Reception" android:layout_alignParentEnd="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#DDD" android:layout_marginBottom="12dp"/>
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Amount:" android:layout_alignParentStart="true" android:textStyle="bold" android:textColor="@android:color/black"/>
+                <TextView android:id="@+id/tv_summary_amount" tools:text="₹1000" android:layout_alignParentEnd="true" android:textStyle="bold" android:textColor="@color/text_color_approved" android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Payment Method"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_upi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_upi" android:layout_marginEnd="12dp"/>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="UPI Payment" android:textStyle="bold" android:textColor="@android:color/black"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PhonePe, Google Pay, Paytm, BHIM" android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_arrow_forward"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_payment" android:layout_marginEnd="12dp"/>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Credit/Debit Card" android:textStyle="bold" android:textColor="@android:color/black"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Visa, Mastercard, RuPay, American Express" android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_arrow_forward"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_netbanking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_bank" android:layout_marginEnd="12dp"/>
+            <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Net Banking" android:textStyle="bold" android:textColor="@android:color/black"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="All major banks supported" android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_arrow_forward"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+        <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_check_circle" app:tint="@color/text_color_approved" android:layout_marginEnd="8dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Your booking has been approved! Complete online payment to confirm." android:textSize="12sp"/>
+    </LinearLayout>
+
+</LinearLayout>

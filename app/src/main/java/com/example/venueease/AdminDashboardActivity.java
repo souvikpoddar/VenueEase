@@ -23,9 +23,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
     // Define our fragments
     private VenuesFragment venuesFragment;
     private BookingsFragment bookingsFragment;
-    // We can add these later
-    // private NotificationsFragment notificationsFragment;
-    // private ProfileFragment profileFragment;
+    private NotificationsFragment notificationsFragment;
+    private AdminProfileFragment adminProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         // Initialize our fragments
         venuesFragment = new VenuesFragment();
-        bookingsFragment = new BookingsFragment(); // We'll create this class next
+        bookingsFragment = new BookingsFragment();
+        notificationsFragment = new NotificationsFragment();
+        adminProfileFragment = new AdminProfileFragment();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -55,14 +56,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_bookings) {
                     selectedFragment = bookingsFragment;
                 } else if (itemId == R.id.nav_notifications) {
-                    // selectedFragment = notificationsFragment; // Coming soon
-                    Toast.makeText(AdminDashboardActivity.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-                    return false; // Return false to not select the item yet
+                    selectedFragment = notificationsFragment;
                 } else if (itemId == R.id.nav_profile) {
-                    // selectedFragment = profileFragment; // Coming soon
-                    Toast.makeText(AdminDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                    logoutAdmin();
-                    return false; // Return false to not select the item yet
+                    selectedFragment = adminProfileFragment;
                 }
 
                 if (selectedFragment != null) {

@@ -24,7 +24,7 @@ public class UserDashboardActivity extends AppCompatActivity {
     private UserVenuesFragment userVenuesFragment;
     // We can add these later
     private UserBookingsFragment userBookingsFragment;
-    // private UserNotificationsFragment userNotificationsFragment;
+    private NotificationsFragment userNotificationsFragment;
     // private UserProfileFragment userProfileFragment;
 
     @Override
@@ -35,6 +35,7 @@ public class UserDashboardActivity extends AppCompatActivity {
         // Initialize our fragments
         userVenuesFragment = new UserVenuesFragment();
         userBookingsFragment = new UserBookingsFragment();
+        userNotificationsFragment = new NotificationsFragment();
 
         bottomNavigationView = findViewById(R.id.user_bottom_navigation);
 
@@ -55,9 +56,7 @@ public class UserDashboardActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_bookings) {
                     selectedFragment = userBookingsFragment;
                 } else if (itemId == R.id.user_nav_notifications) {
-                    // selectedFragment = userNotificationsFragment; // (coming soon)
-                    Toast.makeText(UserDashboardActivity.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-                    return false;
+                    selectedFragment = userNotificationsFragment;
                 } else if (itemId == R.id.user_nav_profile) {
                     // selectedFragment = userProfileFragment; // (coming soon)
                     Toast.makeText(UserDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();

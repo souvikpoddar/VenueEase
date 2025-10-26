@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize BOTH SharedPreferences
         sessionPrefs = getSharedPreferences(SESSION_PREFS_NAME, Context.MODE_PRIVATE);
         userAccountsPrefs = getSharedPreferences(USER_ACCOUNTS_PREFS, Context.MODE_PRIVATE);
+
+        initializeAdminCredentials();
 
         // 1. CHECK IF ALREADY LOGGED IN
         checkLoginStatus();
@@ -98,6 +101,19 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeAdminCredentials() {
+        // Check if the admin email key already exists in user accounts
+        if (!userAccountsPrefs.contains(ADMIN_EMAIL)) {
+            SharedPreferences.Editor editor = userAccountsPrefs.edit();
+            // Store password using email as key
+            editor.putString(ADMIN_EMAIL, ADMIN_PASSWORD);
+            // Store full name using email_fullname as key
+            editor.putString(ADMIN_EMAIL + "_fullname", "Admin User"); // Initial default name
+            editor.apply();
+            Log.i("LoginActivity", "Initial admin credentials saved to SharedPreferences.");
+        }
+    }
+
     /**
      * Checks session status and navigates to the correct dashboard based on role.
      */
@@ -121,34 +137,39 @@ public class LoginActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) { /* ... validation ... */ return; }
-        if (TextUtils.isEmpty(password)) { /* ... validation ... */ return; }
+        if (TextUtils.isEmpty(email)) {  return; }
+        if (TextUtils.isEmpty(password)) { return; }
 
         // --- 1. Check for ADMIN ---
-        if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
-            // Admin login successful
-            saveSession("admin", email);
-            Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
-            navigateToAdminDashboard();
-            return; // Stop here
+        if (email.equals(ADMIN_EMAIL)) {
+            // Fetch the stored admin password
+            String storedAdminPassword = userAccountsPrefs.getString(ADMIN_EMAIL, ADMIN_PASSWORD); // Default to original if somehow missing
+
+            if (password.equals(storedAdminPassword)) {
+                // Admin login successful
+                saveSession("admin", email);
+                Toast.makeText(this, "Admin Login Successful", Toast.LENGTH_SHORT).show();
+                navigateToAdminDashboard();
+            } else {
+                // Incorrect password for admin
+                Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_LONG).show();
+            }
+            return; // Stop here if it was the admin email
         }
 
-        // --- 2. Check for USER ---
+        // --- 2. Check for USER (No changes needed here) ---
         if (userAccountsPrefs.contains(email)) {
-            // User email exists, check password
+            // ... (existing user password check logic) ...
             String savedPassword = userAccountsPrefs.getString(email, null);
-
             if (password.equals(savedPassword)) {
-                // User login successful
                 saveSession("user", email);
                 Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                 navigateToUserDashboard();
             } else {
-                // Password incorrect
                 Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_LONG).show();
             }
         } else {
-            // Email not found in admin or user accounts
+            // Email not found in user accounts (and wasn't admin)
             Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_LONG).show();
         }
     }

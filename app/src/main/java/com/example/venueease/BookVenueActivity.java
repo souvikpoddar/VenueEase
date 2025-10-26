@@ -152,10 +152,25 @@ public class BookVenueActivity extends AppCompatActivity {
 
         // --- 7. Handle Result ---
         if (success) {
+            // --- ADD NOTIFICATION FOR ADMIN ---
+            String adminNotifTitle = "New Booking Request \uD83D\uDCEF️"; // Bell emoji
+            String adminNotifMsg = String.format(Locale.getDefault(),
+                    "%s has requested to book %s for %s on %s from %s to %s. Total amount: ₹%.0f. Please review and approve/reject this request.",
+                    userName,
+                    venueToBook.getName(),
+                    eventType,
+                    selectedDbDate, // Use the DB formatted date
+                    startTime,
+                    endTime,
+                    totalPrice);
+            // Assuming you can get the last inserted booking ID, else use 0
+            // int newBookingId = dbHelper.getLastBookingId();
+            dbHelper.addNotification("admin", "NEW_BOOKING", adminNotifTitle, adminNotifMsg, 0 /*newBookingId*/, venueToBook.getId());
+            // --- END NOTIFICATION ---
+
             Toast.makeText(this, "Booking request submitted successfully!", Toast.LENGTH_SHORT).show();
-            // Send RESULT_OK back to the calling fragment/activity
             setResult(Activity.RESULT_OK);
-            finish(); // Close this activity
+            finish();
         } else {
             Toast.makeText(this, "Failed to submit booking request.", Toast.LENGTH_LONG).show();
         }

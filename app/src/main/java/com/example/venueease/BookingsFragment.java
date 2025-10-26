@@ -64,9 +64,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         super.onViewCreated(view, savedInstanceState);
 
         dbHelper = new DatabaseHelper(getContext());
-        // --- TEMPORARY: Add test data ---
-        dbHelper.addTestData();
-        // --- REMOVE THIS LINE IN PRODUCTION ---
+
 
         SharedPreferences sessionPrefs = getActivity().getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
         currentUserEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, null);
@@ -142,7 +140,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
             return;
         }
         // Fetch bookings from DB based on current filters
-        List<Booking> newBookings = dbHelper.getBookings(currentUserEmail, mCurrentStatusFilter, mCurrentDateFilter);
+        List<Booking> newBookings = dbHelper.getBookings(null, mCurrentStatusFilter, mCurrentDateFilter);
         bookingsAdapter.updateBookings(newBookings);
 
         // Show/Hide empty view
@@ -241,6 +239,14 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     public void onApprove(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_APPROVED);
         if (success) {
+            // --- ADD NOTIFICATION FOR USER ---
+            String userNotifTitle = "Booking Approved! ✅";
+            String userNotifMsg = String.format(Locale.getDefault(),
+                    "Great news! Your booking for %s on %s has been approved by the admin. You can now proceed with online payment to confirm your booking. Multiple payment options are available including UPI, Credit/Debit Card, and Net Banking.",
+                    booking.getVenue().getName(), // Assuming venue details are loaded
+                    booking.getEventDate());
+            dbHelper.addNotification(booking.getUserEmail(), "BOOKING_APPROVED", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
+            // --- END NOTIFICATION ---
             // --- New Snackbar Logic ---
 
             // 1. Get the BottomNavigationView from the activity to use as an anchor
@@ -273,6 +279,14 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     public void onReject(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_REJECTED);
         if (success) {
+            // --- ADD NOTIFICATION FOR USER ---
+            String userNotifTitle = "Booking Rejected ❌";
+            String userNotifMsg = String.format(Locale.getDefault(),
+                    "Unfortunately, your booking request for %s on %s has been rejected by the admin. Please contact support or try booking another venue/date.",
+                    booking.getVenue().getName(),
+                    booking.getEventDate());
+            dbHelper.addNotification(booking.getUserEmail(), "BOOKING_REJECTED", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
+            // --- END NOTIFICATION ---
             // --- New Snackbar Logic ---
 
             // 1. Get the anchor view
@@ -301,5 +315,13 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         } else {
             Toast.makeText(getContext(), "Failed to reject", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh the data whenever the fragment becomes visible
+        updateSummaryCards();
+        loadBookings();
     }
 }

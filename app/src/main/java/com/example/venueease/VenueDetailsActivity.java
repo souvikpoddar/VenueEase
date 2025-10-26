@@ -31,16 +31,20 @@ public class VenueDetailsActivity extends AppCompatActivity {
     private ImageView ivDetailVenueImage;
     private TextView tvDetailVenueName, tvDetailVenueLocation, tvDetailTagType,
             tvDetailVenueCapacity, tvDetailVenuePrice, tvDetailDescription,
-            tvRatingValue, tvRatingCount; // (Rating is currently dummy)
+            tvRatingValue, tvRatingCount;
     private LinearLayout llDetailAmenitiesContainer;
     private MaterialButton btnBookThisVenue;
 
     private ActivityResultLauncher<Intent> bookVenueLauncher;
 
+    private DatabaseHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venue_details);
+
+        dbHelper = new DatabaseHelper(this);
 
         bookVenueLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -70,6 +74,7 @@ public class VenueDetailsActivity extends AppCompatActivity {
         // 4. Populate UI if venue data exists
         if (currentVenue != null) {
             populateUi();
+            loadAndDisplayRating();
         } else {
             // Handle error: Venue data not received
             Toast.makeText(this, "Error: Venue details not found.", Toast.LENGTH_LONG).show();
@@ -123,10 +128,21 @@ public class VenueDetailsActivity extends AppCompatActivity {
 
         // Add amenities dynamically
         addAmenitiesToList(currentVenue.getAmenities());
+    }
 
-        // TODO: Populate Reviews (currently uses dummy text from XML)
-        // tvRatingValue.setText("4.8");
-        // tvRatingCount.setText("Based on 24 reviews");
+    private void loadAndDisplayRating() {
+        if (currentVenue == null) return;
+
+        double averageRating = dbHelper.getAverageRating(currentVenue.getId());
+        int ratingCount = dbHelper.getRatingCount(currentVenue.getId());
+
+        if (ratingCount > 0) {
+            tvRatingValue.setText(String.format(Locale.getDefault(), "%.1f", averageRating)); // Format to 1 decimal place
+            tvRatingCount.setText(String.format(Locale.getDefault(), "Based on %d review%s", ratingCount, ratingCount == 1 ? "" : "s"));
+        } else {
+            tvRatingValue.setText("N/A");
+            tvRatingCount.setText("No reviews yet");
+        }
     }
 
     private void addAmenitiesToList(String amenitiesString) {
