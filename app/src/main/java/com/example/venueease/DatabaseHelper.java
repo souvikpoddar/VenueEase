@@ -32,6 +32,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_AMENITIES = "amenities";
     public static final String KEY_VENUE_PHOTOS = "venue_photos"; // Storing as URI string
 
+    // --- NEW: Bookings Table ---
+    public static final String TABLE_BOOKINGS = "Bookings";
+    public static final String KEY_BOOKING_ID = "booking_id";
+    public static final String KEY_B_VENUE_ID = "venue_id"; // Foreign key to Venues table
+    public static final String KEY_B_USER_ID = "user_id"; // Foreign key to Users table (we'll add later)
+    public static final String KEY_USER_NAME = "user_name"; // e.g., "John Doe"
+    public static final String KEY_USER_EMAIL = "user_email"; // e.g., "john@example.com"
+    public static final String KEY_EVENT_DATE = "event_date"; // e.g., "Sun, Dec 15, 2024"
+    public static final String KEY_START_TIME = "start_time"; // e.g., "09:00"
+    public static final String KEY_END_TIME = "end_time"; // e.g., "17:00"
+    public static final String KEY_EVENT_TYPE = "event_type"; // e.g., "Corporate Seminar"
+    public static final String KEY_TOTAL_PRICE = "total_price"; // e.g., 1200
+    public static final String KEY_SPECIAL_REQUESTS = "special_requests"; // e.g., "Need additional mics"
+    public static final String KEY_BOOKING_STATUS = "booking_status"; // "Pending", "Approved", "Rejected", "Confirmed"
+    public static final String KEY_SUBMITTED_DATE = "submitted_date"; // e.g., "1/12/2024"
+
     // Create table SQL query
     private static final String CREATE_TABLE_VENUES =
             "CREATE TABLE " + TABLE_VENUES + "("
@@ -46,6 +62,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + KEY_VENUE_PHOTOS + " TEXT"
                     + ")";
 
+    // --- NEW: Create Bookings Table Query ---
+    private static final String CREATE_TABLE_BOOKINGS =
+            "CREATE TABLE " + TABLE_BOOKINGS + "("
+                    + KEY_BOOKING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_B_VENUE_ID + " INTEGER," // We'll link this to the Venues table
+                    + KEY_B_USER_ID + " INTEGER," // We'll link this to a Users table
+                    + KEY_USER_NAME + " TEXT,"
+                    + KEY_USER_EMAIL + " TEXT,"
+                    + KEY_EVENT_DATE + " TEXT,"
+                    + KEY_START_TIME + " TEXT,"
+                    + KEY_END_TIME + " TEXT,"
+                    + KEY_EVENT_TYPE + " TEXT,"
+                    + KEY_TOTAL_PRICE + " REAL,"
+                    + KEY_SPECIAL_REQUESTS + " TEXT,"
+                    + KEY_BOOKING_STATUS + " TEXT,"
+                    + KEY_SUBMITTED_DATE + " TEXT"
+                    // + ", FOREIGN KEY(" + KEY_B_VENUE_ID + ") REFERENCES " + TABLE_VENUES + "(" + KEY_VENUE_ID + ")"
+                    // We'll add real foreign keys later if we build the Users table
+                    + ")";
+    // --- END: Create Bookings Table Query ---
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -54,6 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_VENUES);
+        db.execSQL(CREATE_TABLE_BOOKINGS);
         // You could also create a Users table here if needed
     }
 
@@ -62,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VENUES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKINGS);
         // Create tables again
         onCreate(db);
     }

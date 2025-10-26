@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:layout_marginBottom="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/tv_venue_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/tv_booking_status"
+                android:text="Grand Conference Hall"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/tv_available_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_venue_name"
+                android:text="Available"
+                android:textColor="#34A853"
+                android:drawableStart="@drawable/ic_check_circle"
+                android:drawablePadding="4dp"
+                android:drawableTint="#34A853"
+                android:gravity="center_vertical"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/tv_booking_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Approved"
+                tools:background="@drawable/tag_background_approved"
+                tools:textColor="@color/text_color_approved"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_request_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            tools:text="Request from John Doe | john@example.com"
+            android:textSize="14sp"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:stretchColumns="1">
+
+            <TableRow android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/tv_event_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="Sun, Dec 15, 2024"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/tv_event_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_time"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="09:00 - 17:00"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/tv_event_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_event_type"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="Corporate Seminar"/>
+            </TableRow>
+            <TableRow android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/tv_event_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_price"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="₹1200"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:id="@+id/tv_venue_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="Bangalore"/>
+
+                <TextView
+                    android:id="@+id/tv_venue_capacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_people"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="Capacity: 200"/>
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_special_requests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/blue_tint_background"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Special Requests:"
+                android:textStyle="bold"
+                android:textColor="#0D47A1"
+                android:drawableStart="@drawable/ic_special_requests"
+                android:drawablePadding="8dp"
+                android:drawableTint="#0D47A1"/>
+            <TextView
+                android:id="@+id/tv_special_requests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                tools:text="Need additional microphones"
+                android:textColor="#0D47A1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_status_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_tint_background"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_info"
+                app:tint="#0D47A1"
+                android:layout_marginEnd="8dp"/>
+            <TextView
+                android:id="@+id/tv_status_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="User has been notified and can now proceed with payment"
+                android:textColor="#0D47A1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_action_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_reject"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Reject"
+                app:strokeColor="@android:color/holo_red_light"
+                android:textColor="@android:color/holo_red_light"
+                app:icon="@drawable/ic_close"
+                app:iconTint="@android:color/holo_red_light"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_approve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Approve &amp; Notify User"
+                app:cornerRadius="8dp"
+                android:backgroundTint="#34A853"
+                app:icon="@drawable/ic_check"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_submitted_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            tools:text="Submitted on 1/12/2024"
+            android:textSize="12sp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
