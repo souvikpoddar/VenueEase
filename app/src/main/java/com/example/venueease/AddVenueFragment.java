@@ -57,20 +57,20 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
     private Venue venueToEdit = null;
     private boolean isEditMode = false;
 
-    // 3. Update onAttach to use new listener name
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        try {
-            listener = (OnVenueDataChangedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnVenueDataChangedListener");
-        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            listener = (OnVenueDataChangedListener) getTargetFragment();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement OnVenueDataChangedListener");
+        }
 
         // 4. Check arguments to see if we are in "Edit Mode"
         if (getArguments() != null) {

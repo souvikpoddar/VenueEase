@@ -1,216 +1,83 @@
 package com.example.venueease;
 
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.button.MaterialButton;
-import java.util.ArrayList;
-import android.widget.ImageButton; // Import this
-import androidx.appcompat.widget.SearchView; // Import this
-import com.google.android.material.chip.Chip; // Import this
-import com.google.android.material.chip.ChipGroup; // Import this
 import androidx.annotation.NonNull;
-import java.util.List;
-import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-// 1. Implement BOTH interfaces
-public class AdminDashboardActivity extends AppCompatActivity
-        implements AddVenueFragment.OnVenueDataChangedListener,
-        VenueAdapter.OnVenueActionListener, FilterVenuesFragment.FilterListener {
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
-    private MaterialButton btnAddVenue;
-    private RecyclerView rvVenues;
-    private VenueAdapter venueAdapter;
-    private List<Venue> venueList;
-    private SearchView searchView;
-    private ImageButton btnFilter;
-    private ChipGroup chipGroupLocations;
-    private DatabaseHelper dbHelper;
-    private TextView tvEmptyView;
-    private String mCurrentQuery = "";
-    private FilterCriteria mCurrentCriteria = null;
+public class AdminDashboardActivity extends AppCompatActivity {
+
+    private BottomNavigationView bottomNavigationView;
+
+    // Define our fragments
+    private VenuesFragment venuesFragment;
+    private BookingsFragment bookingsFragment;
+    // We can add these later
+    // private NotificationsFragment notificationsFragment;
+    // private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        dbHelper = new DatabaseHelper(this);
-        btnAddVenue = findViewById(R.id.btn_add_venue);
-        rvVenues = findViewById(R.id.rv_venues);
-        searchView = findViewById(R.id.search_view);
-        btnFilter = findViewById(R.id.btn_filter);
-        chipGroupLocations = findViewById(R.id.chip_group_locations);
-        tvEmptyView = findViewById(R.id.tv_empty_view);
+        // Initialize our fragments
+        venuesFragment = new VenuesFragment();
+        bookingsFragment = new BookingsFragment(); // We'll create this class next
 
-        setupRecyclerView();
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // --- Setup Listeners ---
-        btnAddVenue.setOnClickListener(v -> {
-            AddVenueFragment addVenueFragment = new AddVenueFragment();
-            addVenueFragment.show(getSupportFragmentManager(), addVenueFragment.getTag());
-        });
-
-        // 2. Filter Button Listener
-        btnFilter.setOnClickListener(v -> {
-            FilterVenuesFragment filterFragment = new FilterVenuesFragment();
-            filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
-        });
-
-        // 3. Search View Listener
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mCurrentQuery = query;
-                loadVenuesFromDb();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.isEmpty()) {
-                    // If user starts typing, clear the chip selection
-                    chipGroupLocations.clearCheck();
-                }
-                mCurrentQuery = newText;
-                loadVenuesFromDb();
-                return true;
-            }
-        });
-
-        // 4. Add the new ChipGroup Listener
-        chipGroupLocations.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-            @Override
-            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-                if (checkedIds.isEmpty()) {
-                    searchView.setQuery("", true);
-                } else {
-                    // Get the selected chip
-                    int selectedChipId = checkedIds.get(0); // We're in singleSelection mode
-                    Chip selectedChip = group.findViewById(selectedChipId);
-
-                    if (selectedChip != null) {
-                        // Set the search bar text to the chip's text and submit
-                        String chipText = selectedChip.getText().toString();
-                        searchView.setQuery(chipText, true); // true = submit the query
-                    }
-                }
-            }
-        });
-
-        // Load initial data
-        loadVenuesFromDb();
-    }
-
-    private void setupRecyclerView() {
-        venueList = new ArrayList<>();
-        // 2. Pass 'this' as the listener
-        venueAdapter = new VenueAdapter(this, venueList, this);
-        rvVenues.setLayoutManager(new LinearLayoutManager(this));
-        rvVenues.setAdapter(venueAdapter);
-    }
-
-    private void loadVenuesFromDb() {
-        // Get the list from the database using current state
-        List<Venue> newVenues = dbHelper.getFilteredVenues(mCurrentQuery, mCurrentCriteria);
-
-        venueAdapter.updateVenues(newVenues);
-
-        if (newVenues.isEmpty()) {
-            // List is empty, show the empty view
-            rvVenues.setVisibility(View.GONE);
-            tvEmptyView.setVisibility(View.VISIBLE);
-
-            // Set context-aware text
-            if (!mCurrentQuery.isEmpty() || mCurrentCriteria != null) {
-                tvEmptyView.setText(R.string.empty_venues_admin_filtered);
-            } else {
-                tvEmptyView.setText(R.string.empty_venues_admin_default);
-            }
-        } else {
-            // List has items, show the RecyclerView
-            rvVenues.setVisibility(View.VISIBLE);
-            tvEmptyView.setVisibility(View.GONE);
+        // Load the default fragment (Venues)
+        if (savedInstanceState == null) {
+            loadFragment(venuesFragment);
         }
+
+        // Set the listener for the bottom navigation
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_venues) {
+                    selectedFragment = venuesFragment;
+                } else if (itemId == R.id.nav_bookings) {
+                    selectedFragment = bookingsFragment;
+                } else if (itemId == R.id.nav_notifications) {
+                    // selectedFragment = notificationsFragment; // Coming soon
+                    Toast.makeText(AdminDashboardActivity.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+                    return false; // Return false to not select the item yet
+                } else if (itemId == R.id.nav_profile) {
+                    // selectedFragment = profileFragment; // Coming soon
+                    Toast.makeText(AdminDashboardActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
+                    return false; // Return false to not select the item yet
+                }
+
+                if (selectedFragment != null) {
+                    loadFragment(selectedFragment);
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     /**
-     * 5. Callback from FilterVenuesFragment
+     * Helper method to replace the fragment in the container
      */
-    @Override
-    public void onFiltersApplied(FilterCriteria criteria) {
-        mCurrentCriteria = criteria; // Save the new criteria
-        loadVenuesFromDb(); // Refresh the list
-    }
-
-    @Override
-    public void onDataChanged() {
-        Toast.makeText(this, "Dashboard refreshing...", Toast.LENGTH_SHORT).show();
-        loadVenuesFromDb(); // Refresh list while keeping filters
-    }
-
-    // 4. This is the new callback from the VenueAdapter
-    @Override
-    public void onEditClicked(Venue venue) {
-        // Open the fragment in "Edit Mode"
-        AddVenueFragment editVenueFragment = new AddVenueFragment();
-
-        // 5. Create a bundle and pass the venue data
-        Bundle args = new Bundle();
-        args.putSerializable("venue_to_edit", venue);
-        editVenueFragment.setArguments(args);
-
-        editVenueFragment.show(getSupportFragmentManager(), editVenueFragment.getTag());
-    }
-
-    // 6. This is also from the VenueAdapter (for later)
-    @Override
-    public void onDeleteClicked(Venue venue) {
-        // 1. Build the confirmation dialog
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Delete Venue")
-                .setMessage("Are you sure you want to delete \"" + venue.getName() + "\"?\nThis action cannot be undone.")
-                .setCancelable(false) // User must choose an option
-
-                // 2. The "Delete" button (Positive)
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Call the database helper to delete
-                        int rowsAffected = dbHelper.deleteVenue(venue.getId());
-
-                        if (rowsAffected > 0) {
-                            Toast.makeText(AdminDashboardActivity.this, "Venue deleted", Toast.LENGTH_SHORT).show();
-                            // Refresh the list
-                            loadVenuesFromDb();
-                        } else {
-                            Toast.makeText(AdminDashboardActivity.this, "Error deleting venue", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-
-                // 3. The "Cancel" button (Negative)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss(); // Just close the dialog
-                    }
-                })
-
-                // 4. Create the dialog
-                .create();
-
-        // 4. Show the dialog
-        dialog.show();
-
-        // 5. Get the button AFTER showing the dialog and set its color
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 }

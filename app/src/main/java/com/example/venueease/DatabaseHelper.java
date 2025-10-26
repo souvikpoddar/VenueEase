@@ -260,5 +260,151 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected;
     }
 
-    // We will add getVenueDetails(), updateVenue(), and deleteVenue() methods here later.
+    /**
+     * ----------------------------------------------------------------
+     * "Bookings" table methods
+     * ----------------------------------------------------------------
+     */
+
+    /**
+     * Fetches bookings that match a specific status and/or date.
+     * We also join with the Venues table to get venue details.
+     */
+    public List<Booking> getBookings(String status, String date) {
+        List<Booking> bookingList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // We use a LEFT JOIN to get venue details for each booking
+        String query = "SELECT b.*, v." + KEY_VENUE_NAME + ", v." + KEY_LOCATION + ", v." + KEY_CAPACITY +
+                " FROM " + TABLE_BOOKINGS + " b" +
+                " LEFT JOIN " + TABLE_VENUES + " v ON b." + KEY_B_VENUE_ID + " = v." + KEY_VENUE_ID +
+                " WHERE 1=1";
+
+        List<String> selectionArgs = new ArrayList<>();
+
+        if (status != null && !status.isEmpty()) {
+            query += " AND b." + KEY_BOOKING_STATUS + " = ?";
+            selectionArgs.add(status);
+        }
+
+        if (date != null && !date.isEmpty()) {
+            query += " AND b." + KEY_EVENT_DATE + " = ?";
+            selectionArgs.add(date);
+        }
+
+        query += " ORDER BY b." + KEY_BOOKING_ID + " DESC";
+
+        Cursor cursor = db.rawQuery(query, selectionArgs.toArray(new String[0]));
+
+        if (cursor.moveToFirst()) {
+            do {
+                Booking booking = new Booking();
+                // --- Booking Details ---
+                booking.setBookingId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_BOOKING_ID)));
+                booking.setVenueId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_B_VENUE_ID)));
+                booking.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_B_USER_ID)));
+                booking.setUserName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_USER_NAME)));
+                booking.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(KEY_USER_EMAIL)));
+                booking.setEventDate(cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)));
+                booking.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow(KEY_START_TIME)));
+                booking.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(KEY_END_TIME)));
+                booking.setEventType(cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TYPE)));
+                booking.setTotalPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_TOTAL_PRICE)));
+                booking.setSpecialRequests(cursor.getString(cursor.getColumnIndexOrThrow(KEY_SPECIAL_REQUESTS)));
+                booking.setBookingStatus(cursor.getString(cursor.getColumnIndexOrThrow(KEY_BOOKING_STATUS)));
+                booking.setSubmittedDate(cursor.getString(cursor.getColumnIndexOrThrow(KEY_SUBMITTED_DATE)));
+
+                // --- Joined Venue Details ---
+                Venue venue = new Venue();
+                venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
+                venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
+                venue.setCapacity(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_CAPACITY)));
+                booking.setVenue(venue); // Attach the venue object to the booking
+
+                bookingList.add(booking);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bookingList;
+    }
+
+    /**
+     * Updates the status of a specific booking.
+     */
+    public boolean updateBookingStatus(int bookingId, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_BOOKING_STATUS, newStatus);
+
+        int rowsAffected = db.update(
+                TABLE_BOOKINGS,
+                values,
+                KEY_BOOKING_ID + " = ?",
+                new String[]{String.valueOf(bookingId)}
+        );
+        db.close();
+        return rowsAffected > 0;
+    }
+
+    /**
+     * Gets the count of bookings for a specific status.
+     * If status is null, gets the total count.
+     */
+    public int getBookingCount(String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM " + TABLE_BOOKINGS;
+        String[] selectionArgs = null;
+
+        if (status != null && !status.isEmpty()) {
+            query += " WHERE " + KEY_BOOKING_STATUS + " = ?";
+            selectionArgs = new String[]{status};
+        }
+
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    // --- We need a way to add test data ---
+    // --- Add this method temporarily to test ---
+    public void addTestData() {
+        if (getBookingCount(null) == 0) { // Only add if table is empty
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(KEY_B_VENUE_ID, 1);
+            values.put(KEY_USER_NAME, "John Doe");
+            values.put(KEY_USER_EMAIL, "john@example.com");
+            values.put(KEY_EVENT_DATE, "Sun, Dec 15, 2024");
+            values.put(KEY_START_TIME, "09:00");
+            values.put(KEY_END_TIME, "17:00");
+            values.put(KEY_EVENT_TYPE, "Corporate Seminar");
+            values.put(KEY_TOTAL_PRICE, 1200);
+            values.put(KEY_SPECIAL_REQUESTS, "Need additional microphones");
+            values.put(KEY_BOOKING_STATUS, BookingsAdapter.STATUS_APPROVED);
+            values.put(KEY_SUBMITTED_DATE, "1/12/2024");
+            db.insert(TABLE_BOOKINGS, null, values);
+
+            values.clear();
+            values.put(KEY_B_VENUE_ID, 2);
+            values.put(KEY_USER_NAME, "Jane Smith");
+            values.put(KEY_USER_EMAIL, "jane@example.com");
+            values.put(KEY_EVENT_DATE, "Fri, Dec 20, 2024");
+            values.put(KEY_START_TIME, "18:00");
+            values.put(KEY_END_TIME, "23:00");
+            values.put(KEY_EVENT_TYPE, "Wedding Reception");
+            values.put(KEY_TOTAL_PRICE, 1000);
+            values.put(KEY_SPECIAL_REQUESTS, "Floral decoration required");
+            values.put(KEY_BOOKING_STATUS, BookingsAdapter.STATUS_PENDING);
+            values.put(KEY_SUBMITTED_DATE, "2/12/2024");
+            db.insert(TABLE_BOOKINGS, null, values);
+
+            db.close();
+        }
+    }
 }
