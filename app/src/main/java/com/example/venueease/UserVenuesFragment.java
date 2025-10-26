@@ -1,6 +1,7 @@
 package com.example.venueease;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -174,8 +175,14 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
 
     @Override
     public void onViewDetailsClicked(Venue venue) {
-        // TODO: Implement navigation to Venue Details page
-        Toast.makeText(getContext(), "View Details for " + venue.getName(), Toast.LENGTH_SHORT).show();
+        // Create an Intent to start VenueDetailsActivity
+        Intent intent = new Intent(getContext(), VenueDetailsActivity.class);
+
+        // Pass the selected Venue object to the activity
+        intent.putExtra("VENUE_DATA", venue); // Venue class must implement Serializable
+
+        // Start the activity
+        startActivity(intent);
     }
 
     @Override

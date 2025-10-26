@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VenueEase">
         <activity
+            android:name=".VenueDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserDashboardActivity"
             android:exported="false" />
         <activity
