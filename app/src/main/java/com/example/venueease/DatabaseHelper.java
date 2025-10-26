@@ -104,18 +104,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public List<Venue> getAllVenuesList() {
+    // ... (inside DatabaseHelper.java)
+
+    /**
+     * Get all venues that match a search query and filter criteria
+     */
+    public List<Venue> getFilteredVenues(String nameOrLocationQuery, FilterCriteria criteria) {
         List<Venue> venueList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Query to select all venues
-        String selectQuery = "SELECT * FROM " + TABLE_VENUES;
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Base query
+        StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_VENUES + " WHERE 1=1");
+        List<String> selectionArgs = new ArrayList<>();
+
+        // Add search query for EITHER name OR location
+        if (nameOrLocationQuery != null && !nameOrLocationQuery.isEmpty()) {
+            query.append(" AND (")
+                    .append(KEY_VENUE_NAME).append(" LIKE ? OR ")
+                    .append(KEY_LOCATION).append(" LIKE ?)");
+
+            // Add the argument twice, once for name and once for location
+            selectionArgs.add("%" + nameOrLocationQuery + "%");
+            selectionArgs.add("%" + nameOrLocationQuery + "%");
+        }
+
+        // Add filter criteria
+        if (criteria != null) {
+            if (criteria.getVenueType() != null) {
+                query.append(" AND ").append(KEY_VENUE_TYPE).append(" = ?");
+                selectionArgs.add(criteria.getVenueType());
+            }
+            if (criteria.getMinCapacity() != FilterCriteria.ANY_CAPACITY) {
+                query.append(" AND ").append(KEY_CAPACITY).append(" >= ?");
+                selectionArgs.add(String.valueOf(criteria.getMinCapacity()));
+            }
+            if (criteria.getMaxPrice() != FilterCriteria.ANY_PRICE) {
+                query.append(" AND ").append(KEY_PRICE_PER_HOUR).append(" <= ?");
+                selectionArgs.add(String.valueOf(criteria.getMaxPrice()));
+            }
+
+            // TODO: Implement Date filter logic
+            // This requires a check against the 'Bookings' table to see if a venue
+            // is available on that date. We will add this logic later.
+            if (criteria.getDate() != null) {
+                Log.w("DatabaseHelper", "Date filter is not yet implemented.");
+            }
+        }
+
+        // Convert List<String> to String[]
+        String[] args = new String[selectionArgs.size()];
+        selectionArgs.toArray(args);
+
+        // Execute query
+        Cursor cursor = db.rawQuery(query.toString(), args);
 
         // Loop through all rows and add to list
         if (cursor.moveToFirst()) {
             do {
                 Venue venue = new Venue();
+                // (Set all properties: id, name, location, etc.)
                 venue.setId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_VENUE_ID)));
                 venue.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_NAME)));
                 venue.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(KEY_LOCATION)));
@@ -125,17 +172,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 venue.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(KEY_DESCRIPTION)));
                 venue.setAmenities(cursor.getString(cursor.getColumnIndexOrThrow(KEY_AMENITIES)));
                 venue.setPhotoUri(cursor.getString(cursor.getColumnIndexOrThrow(KEY_VENUE_PHOTOS)));
-
-                // Add venue to list
                 venueList.add(venue);
             } while (cursor.moveToNext());
         }
 
-        // Close the cursor and database
         cursor.close();
         db.close();
-
-        // Return the list
         return venueList;
     }
 

@@ -87,14 +87,14 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp">
 
-                    <SearchView
+                    <androidx.appcompat.widget.SearchView
                         android:id="@+id/search_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:queryHint="@string/search_hint"
-                        android:iconifiedByDefault="false"
+                        app:iconifiedByDefault="false"
                         android:layout_toStartOf="@id/btn_filter"
-                        android:queryBackground="@android:color/transparent"
+                        app:queryBackground="@android:color/transparent"
                         android:layout_centerVertical="true"/>
 
                     <ImageButton
@@ -116,9 +116,11 @@
                 android:layout_marginBottom="16dp">
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_locations"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleLine="true">
+                    app:singleLine="true"
+                    app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
                         style="@style/Widget.MaterialComponents.Chip.Filter"

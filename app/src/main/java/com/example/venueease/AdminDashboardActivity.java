@@ -12,18 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
+import android.widget.ImageButton; // Import this
+import androidx.appcompat.widget.SearchView; // Import this
+import com.google.android.material.chip.Chip; // Import this
+import com.google.android.material.chip.ChipGroup; // Import this
+import androidx.annotation.NonNull;
 import java.util.List;
 
 // 1. Implement BOTH interfaces
 public class AdminDashboardActivity extends AppCompatActivity
         implements AddVenueFragment.OnVenueDataChangedListener,
-        VenueAdapter.OnVenueActionListener {
+        VenueAdapter.OnVenueActionListener, FilterVenuesFragment.FilterListener {
 
     private MaterialButton btnAddVenue;
     private RecyclerView rvVenues;
     private VenueAdapter venueAdapter;
     private List<Venue> venueList;
+    private SearchView searchView;
+    private ImageButton btnFilter;
+    private ChipGroup chipGroupLocations;
     private DatabaseHelper dbHelper;
+    private String mCurrentQuery = "";
+    private FilterCriteria mCurrentCriteria = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +43,67 @@ public class AdminDashboardActivity extends AppCompatActivity
         dbHelper = new DatabaseHelper(this);
         btnAddVenue = findViewById(R.id.btn_add_venue);
         rvVenues = findViewById(R.id.rv_venues);
+        searchView = findViewById(R.id.search_view);
+        btnFilter = findViewById(R.id.btn_filter);
+        chipGroupLocations = findViewById(R.id.chip_group_locations);
 
         setupRecyclerView();
 
-        // "Add Venue" button (opens fragment in "Add Mode")
+        // --- Setup Listeners ---
         btnAddVenue.setOnClickListener(v -> {
             AddVenueFragment addVenueFragment = new AddVenueFragment();
-            // No arguments means "Add Mode"
             addVenueFragment.show(getSupportFragmentManager(), addVenueFragment.getTag());
         });
 
+        // 2. Filter Button Listener
+        btnFilter.setOnClickListener(v -> {
+            FilterVenuesFragment filterFragment = new FilterVenuesFragment();
+            filterFragment.show(getSupportFragmentManager(), filterFragment.getTag());
+        });
+
+        // 3. Search View Listener
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mCurrentQuery = query;
+                loadVenuesFromDb();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.isEmpty()) {
+                    // If user starts typing, clear the chip selection
+                    chipGroupLocations.clearCheck();
+                }
+                mCurrentQuery = newText;
+                loadVenuesFromDb();
+                return true;
+            }
+        });
+
+        // 4. Add the new ChipGroup Listener
+        chipGroupLocations.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+                if (checkedIds.isEmpty()) {
+                    // No chip selected, do nothing
+                    // (This might happen when searchView clears it)
+                } else {
+                    // Get the selected chip
+                    int selectedChipId = checkedIds.get(0); // We're in singleSelection mode
+                    Chip selectedChip = group.findViewById(selectedChipId);
+
+                    if (selectedChip != null) {
+                        // Set the search bar text to the chip's text and submit
+                        String chipText = selectedChip.getText().toString();
+                        searchView.setQuery(chipText, true); // true = submit the query
+                    }
+                }
+            }
+        });
+
+        // Load initial data
         loadVenuesFromDb();
     }
 
@@ -55,15 +116,27 @@ public class AdminDashboardActivity extends AppCompatActivity
     }
 
     private void loadVenuesFromDb() {
-        List<Venue> newVenues = dbHelper.getAllVenuesList();
+        // Get the list from the database using current state
+        List<Venue> newVenues = dbHelper.getFilteredVenues(mCurrentQuery, mCurrentCriteria);
+
         venueAdapter.updateVenues(newVenues);
+
+        // TODO: Show/hide a "No venues found" message
     }
 
-    // 3. This is the callback from the AddVenueFragment
+    /**
+     * 5. Callback from FilterVenuesFragment
+     */
+    @Override
+    public void onFiltersApplied(FilterCriteria criteria) {
+        mCurrentCriteria = criteria; // Save the new criteria
+        loadVenuesFromDb(); // Refresh the list
+    }
+
     @Override
     public void onDataChanged() {
         Toast.makeText(this, "Dashboard refreshing...", Toast.LENGTH_SHORT).show();
-        loadVenuesFromDb();
+        loadVenuesFromDb(); // Refresh list while keeping filters
     }
 
     // 4. This is the new callback from the VenueAdapter
