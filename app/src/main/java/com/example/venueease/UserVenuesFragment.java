@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnVenueUserActionListener {
+public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnVenueUserActionListener, FilterVenuesFragment.FilterListener {
 
     // Database & RecyclerView
     private DatabaseHelper dbHelper;
@@ -96,13 +96,14 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
     }
 
     private void setupListeners() {
-        // TODO: Filter Button
+        // Filter Button
         userBtnFilter.setOnClickListener(v -> {
-            // We will reuse the FilterVenuesFragment here
-            Toast.makeText(getContext(), "Filter clicked", Toast.LENGTH_SHORT).show();
-            // FilterVenuesFragment filterFragment = new FilterVenuesFragment();
-            // filterFragment.setTargetFragment(UserVenuesFragment.this, 0);
-            // filterFragment.show(getParentFragmentManager(), filterFragment.getTag());
+            FilterVenuesFragment filterFragment = new FilterVenuesFragment();
+
+            // Set 'this' (UserVenuesFragment) as the target to receive the results
+            filterFragment.setTargetFragment(UserVenuesFragment.this, 0);
+
+            filterFragment.show(getParentFragmentManager(), filterFragment.getTag());
         });
 
         // Search View
@@ -161,6 +162,12 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
             rvUserVenues.setVisibility(View.VISIBLE);
             tvUserEmptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onFiltersApplied(FilterCriteria criteria) {
+        mCurrentCriteria = criteria; // Save the new criteria
+        loadVenuesFromDb(); // Refresh the list with the new filters
     }
 
     // --- Adapter Action Callbacks ---
