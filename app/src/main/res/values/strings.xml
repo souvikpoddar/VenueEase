@@ -67,4 +67,7 @@
     <string name="filter_any_price">Any price</string>
     <string name="btn_clear_all">Clear All</string>
     <string name="btn_apply_filters">Apply Filters</string>
+
+    <string name="empty_venues_admin_default">No venues yet. Tap the \'+\' button to add one!</string>
+    <string name="empty_venues_admin_filtered">No venues found matching your criteria.</string>
 </resources>

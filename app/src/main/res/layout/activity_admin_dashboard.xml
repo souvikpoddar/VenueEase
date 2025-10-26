@@ -168,6 +168,17 @@
                 tools:listitem="@layout/list_item_venue_admin"
                 tools:itemCount="2"/>
 
+            <TextView
+                android:id="@+id/tv_empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_venues_admin_default"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:padding="32dp"
+                android:visibility="gone"
+                app:drawableTopCompat="@drawable/ic_no_venues_placeholder" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -18,6 +18,7 @@ import com.google.android.material.chip.Chip; // Import this
 import com.google.android.material.chip.ChipGroup; // Import this
 import androidx.annotation.NonNull;
 import java.util.List;
+import android.widget.TextView;
 
 // 1. Implement BOTH interfaces
 public class AdminDashboardActivity extends AppCompatActivity
@@ -32,6 +33,7 @@ public class AdminDashboardActivity extends AppCompatActivity
     private ImageButton btnFilter;
     private ChipGroup chipGroupLocations;
     private DatabaseHelper dbHelper;
+    private TextView tvEmptyView;
     private String mCurrentQuery = "";
     private FilterCriteria mCurrentCriteria = null;
 
@@ -46,6 +48,7 @@ public class AdminDashboardActivity extends AppCompatActivity
         searchView = findViewById(R.id.search_view);
         btnFilter = findViewById(R.id.btn_filter);
         chipGroupLocations = findViewById(R.id.chip_group_locations);
+        tvEmptyView = findViewById(R.id.tv_empty_view);
 
         setupRecyclerView();
 
@@ -121,7 +124,22 @@ public class AdminDashboardActivity extends AppCompatActivity
 
         venueAdapter.updateVenues(newVenues);
 
-        // TODO: Show/hide a "No venues found" message
+        if (newVenues.isEmpty()) {
+            // List is empty, show the empty view
+            rvVenues.setVisibility(View.GONE);
+            tvEmptyView.setVisibility(View.VISIBLE);
+
+            // Set context-aware text
+            if (!mCurrentQuery.isEmpty() || mCurrentCriteria != null) {
+                tvEmptyView.setText(R.string.empty_venues_admin_filtered);
+            } else {
+                tvEmptyView.setText(R.string.empty_venues_admin_default);
+            }
+        } else {
+            // List has items, show the RecyclerView
+            rvVenues.setVisibility(View.VISIBLE);
+            tvEmptyView.setVisibility(View.GONE);
+        }
     }
 
     /**
