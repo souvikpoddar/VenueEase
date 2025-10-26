@@ -90,8 +90,7 @@ public class AdminDashboardActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
                 if (checkedIds.isEmpty()) {
-                    // No chip selected, do nothing
-                    // (This might happen when searchView clears it)
+                    searchView.setQuery("", true);
                 } else {
                     // Get the selected chip
                     int selectedChipId = checkedIds.get(0); // We're in singleSelection mode
