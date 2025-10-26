@@ -202,6 +202,30 @@ public class UserBookingsFragment extends Fragment implements
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_CONFIRMED);
 
         if (success) {
+            // --- ADD NOTIFICATIONS (ADMIN + USER) ---
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String paymentDate = sdf.format(new Date());
+
+            // Admin Notification
+            String adminNotifTitle = "Payment Received \uD83D\uDCB8"; // Money emoji
+            String adminNotifMsg = String.format(Locale.getDefault(),
+                    "Payment of ₹%.0f received from %s for %s booking on %s. The booking is now confirmed.",
+                    booking.getTotalPrice(),
+                    booking.getUserName(),
+                    booking.getVenue().getName(),
+                    booking.getEventDate());
+            dbHelper.addNotification("admin", "PAYMENT_RECEIVED", adminNotifTitle, adminNotifMsg, booking.getBookingId(), booking.getVenueId());
+
+            // User Notification
+            String userNotifTitle = "Payment Successful! ✅";
+            String userNotifMsg = String.format(Locale.getDefault(),
+                    "Payment confirmed for your booking at %s on %s. Your booking is now confirmed and you will receive further details shortly. Thank you for choosing our services! Payment ID: %s",
+                    booking.getVenue().getName(),
+                    booking.getEventDate(),
+                    paymentId);
+            dbHelper.addNotification(booking.getUserEmail(), "PAYMENT_SUCCESSFUL", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
+            // --- END NOTIFICATIONS ---
+
             // 2. Show the Success Dialog
             PaymentSuccessFragment successFragment = PaymentSuccessFragment.newInstance(booking, paymentId);
             successFragment.show(getChildFragmentManager(), "PaymentSuccess");
@@ -253,6 +277,18 @@ public class UserBookingsFragment extends Fragment implements
                 date);
 
         if (success) {
+            // --- ADD NOTIFICATION FOR ADMIN ---
+            String adminNotifTitle = "New Rating Submitted ⭐";
+            String adminNotifMsg = String.format(Locale.getDefault(),
+                    "%s submitted a %.1f star rating for %s (Booking #%d). Comment: %s",
+                    booking.getUserName(),
+                    rating,
+                    booking.getVenue().getName(),
+                    booking.getBookingId(),
+                    comment.isEmpty() ? "No comment" : comment);
+            dbHelper.addNotification("admin", "RATING_SUBMITTED", adminNotifTitle, adminNotifMsg, booking.getBookingId(), booking.getVenueId());
+            // --- END NOTIFICATION ---
+
             Toast.makeText(getContext(), "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Failed to submit rating.", Toast.LENGTH_SHORT).show();

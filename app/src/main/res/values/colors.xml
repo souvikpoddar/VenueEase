@@ -16,4 +16,6 @@
 
     <color name="bg_color_confirmed">#E3F2FD</color>
     <color name="text_color_confirmed">#185ABC</color>
+
+    <color name="unread_notification_background">#E3F2FD</color>
 </resources>

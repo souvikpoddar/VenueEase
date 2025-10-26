@@ -9,8 +9,11 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -56,6 +59,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_RATING_VALUE = "rating_value"; // Float (1.0 to 5.0)
     public static final String KEY_RATING_COMMENT = "rating_comment"; // Text
     public static final String KEY_RATING_DATE = "rating_date"; // Text
+
+    // --- Notifications Table ---
+    public static final String TABLE_NOTIFICATIONS = "Notifications";
+    public static final String KEY_NOTIFICATION_ID = "notification_id";
+    public static final String KEY_N_USER_EMAIL = "user_email"; // Email of the user this notification is for (or "admin")
+    public static final String KEY_NOTIFICATION_TYPE = "notification_type"; // e.g., "NEW_BOOKING", "BOOKING_APPROVED", "PAYMENT_RECEIVED", "RATING_SUBMITTED"
+    public static final String KEY_NOTIFICATION_TITLE = "notification_title";
+    public static final String KEY_NOTIFICATION_MESSAGE = "notification_message";
+    public static final String KEY_N_BOOKING_ID = "booking_id"; // Optional: Link to relevant booking
+    public static final String KEY_N_VENUE_ID = "venue_id"; // Optional: Link to relevant venue
+    public static final String KEY_IS_READ = "is_read"; // INTEGER (0 = false, 1 = true)
+    public static final String KEY_NOTIFICATION_TIMESTAMP = "notification_timestamp"; // TEXT (e.g., ISO 8601 format or similar for sorting)
 
     // Create table SQL query
     private static final String CREATE_TABLE_VENUES =
@@ -103,6 +118,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     // + ", FOREIGN KEY(" + KEY_R_BOOKING_ID + ") REFERENCES " + TABLE_BOOKINGS + "(" + KEY_BOOKING_ID + ")"
                     + ")";
 
+    private static final String CREATE_TABLE_NOTIFICATIONS =
+            "CREATE TABLE " + TABLE_NOTIFICATIONS + "("
+                    + KEY_NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_N_USER_EMAIL + " TEXT," // Target user or "admin"
+                    + KEY_NOTIFICATION_TYPE + " TEXT,"
+                    + KEY_NOTIFICATION_TITLE + " TEXT,"
+                    + KEY_NOTIFICATION_MESSAGE + " TEXT,"
+                    + KEY_N_BOOKING_ID + " INTEGER,"
+                    + KEY_N_VENUE_ID + " INTEGER,"
+                    + KEY_IS_READ + " INTEGER DEFAULT 0,"
+                    + KEY_NOTIFICATION_TIMESTAMP + " TEXT"
+                    + ")";
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -113,6 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_VENUES);
         db.execSQL(CREATE_TABLE_BOOKINGS);
         db.execSQL(CREATE_TABLE_RATINGS);
+        db.execSQL(CREATE_TABLE_NOTIFICATIONS);
         // You could also create a Users table here if needed
     }
 
@@ -123,6 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VENUES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKINGS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RATINGS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         // Create tables again
         onCreate(db);
     }
@@ -520,5 +550,118 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return count;
+    }
+
+    /**
+     * Adds a new notification to the database.
+     */
+    public boolean addNotification(String userEmailOrAdmin, String type, String title, String message, int bookingId, int venueId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String timestamp = sdf.format(new Date()); // Use current time
+
+        values.put(KEY_N_USER_EMAIL, userEmailOrAdmin); // "admin" or user's email
+        values.put(KEY_NOTIFICATION_TYPE, type);
+        values.put(KEY_NOTIFICATION_TITLE, title);
+        values.put(KEY_NOTIFICATION_MESSAGE, message);
+        if (bookingId > 0) values.put(KEY_N_BOOKING_ID, bookingId); // Only add if valid
+        if (venueId > 0) values.put(KEY_N_VENUE_ID, venueId);     // Only add if valid
+        values.put(KEY_IS_READ, 0); // Default to unread
+        values.put(KEY_NOTIFICATION_TIMESTAMP, timestamp);
+
+        long result = db.insert(TABLE_NOTIFICATIONS, null, values);
+        db.close();
+        return result != -1;
+    }
+
+    /**
+     * Gets notifications for a specific user (or admin), optionally filtering by read status.
+     */
+    public List<Notification> getNotifications(String userEmailOrAdmin, boolean unreadOnly) {
+        List<Notification> notificationList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_NOTIFICATIONS + " WHERE " + KEY_N_USER_EMAIL + " = ?";
+        List<String> selectionArgs = new ArrayList<>();
+        selectionArgs.add(userEmailOrAdmin);
+
+        if (unreadOnly) {
+            query += " AND " + KEY_IS_READ + " = 0";
+        }
+
+        query += " ORDER BY " + KEY_NOTIFICATION_TIMESTAMP + " DESC"; // Show newest first
+
+        Cursor cursor = db.rawQuery(query, selectionArgs.toArray(new String[0]));
+
+        if (cursor.moveToFirst()) {
+            do {
+                Notification notification = new Notification();
+                notification.setNotificationId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_NOTIFICATION_ID)));
+                notification.setUserEmail(cursor.getString(cursor.getColumnIndexOrThrow(KEY_N_USER_EMAIL)));
+                notification.setNotificationType(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTIFICATION_TYPE)));
+                notification.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTIFICATION_TITLE)));
+                notification.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTIFICATION_MESSAGE)));
+                notification.setBookingId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_N_BOOKING_ID)));
+                notification.setVenueId(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_N_VENUE_ID)));
+                notification.setRead(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_IS_READ)) == 1);
+                notification.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NOTIFICATION_TIMESTAMP)));
+                notificationList.add(notification);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return notificationList;
+    }
+
+    /**
+     * Updates the read status of a single notification.
+     */
+    public boolean updateNotificationReadStatus(int notificationId, boolean isRead) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_IS_READ, isRead ? 1 : 0);
+
+        int rowsAffected = db.update(
+                TABLE_NOTIFICATIONS,
+                values,
+                KEY_NOTIFICATION_ID + " = ?",
+                new String[]{String.valueOf(notificationId)}
+        );
+        db.close();
+        return rowsAffected > 0;
+    }
+
+    /**
+     * Marks all notifications for a user/admin as read.
+     */
+    public int markAllNotificationsAsRead(String userEmailOrAdmin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_IS_READ, 1); // Mark as read
+
+        int rowsAffected = db.update(
+                TABLE_NOTIFICATIONS,
+                values,
+                KEY_N_USER_EMAIL + " = ? AND " + KEY_IS_READ + " = 0", // Only update unread ones
+                new String[]{userEmailOrAdmin}
+        );
+        db.close();
+        return rowsAffected;
+    }
+
+    /**
+     * Deletes a single notification by its ID.
+     */
+    public boolean deleteNotification(int notificationId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(
+                TABLE_NOTIFICATIONS,
+                KEY_NOTIFICATION_ID + " = ?",
+                new String[]{String.valueOf(notificationId)}
+        );
+        db.close();
+        return rowsAffected > 0;
     }
 }
