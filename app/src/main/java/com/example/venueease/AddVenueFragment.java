@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView; // Import this
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -30,7 +30,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class AddVenueFragment extends BottomSheetDialogFragment {
 
-    // 1. Rename the listener
     public interface OnVenueDataChangedListener {
         void onDataChanged();
     }
@@ -39,7 +38,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
     // UI Views
     private TextInputEditText etVenueName, etLocation, etCapacity, etPrice, etDescription, etAmenities;
     private AutoCompleteTextView actVenueType;
-    private MaterialButton btnCancel, btnSaveVenue; // Renamed
+    private MaterialButton btnCancel, btnSaveVenue;
     private ImageButton btnClose;
     private FrameLayout flUploadPhotos;
     private LinearLayout llUploadPrompt;
@@ -53,7 +52,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
     private ActivityResultLauncher<PickVisualMediaRequest> pickMediaLauncher;
     private String selectedImageUri = "";
 
-    // 2. State variable
+    // State variable
     private Venue venueToEdit = null;
     private boolean isEditMode = false;
 
@@ -72,7 +71,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
             throw new ClassCastException("Calling fragment must implement OnVenueDataChangedListener");
         }
 
-        // 4. Check arguments to see if we are in "Edit Mode"
+        // Check arguments to see if we are in "Edit Mode"
         if (getArguments() != null) {
             venueToEdit = (Venue) getArguments().getSerializable("venue_to_edit");
             if (venueToEdit != null) {
@@ -119,7 +118,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
         findViews(view);
         setupVenueTypeDropdown();
 
-        // 5. Check mode and setup UI
+        // Check mode and setup UI
         if (isEditMode) {
             tvFragmentTitle.setText("Edit Venue");
             btnSaveVenue.setText("Update Venue");
@@ -134,7 +133,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
         btnCancel.setOnClickListener(v -> dismiss());
 
         btnSaveVenue.setOnClickListener(v -> {
-            handleSaveVenue(); // This method now handles BOTH add and update
+            handleSaveVenue();
         });
 
         flUploadPhotos.setOnClickListener(v -> {
@@ -156,14 +155,14 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
         etAmenities = view.findViewById(R.id.et_amenities);
         btnClose = view.findViewById(R.id.btn_close);
         btnCancel = view.findViewById(R.id.btn_cancel);
-        btnSaveVenue = view.findViewById(R.id.btn_add_new_venue); // ID is btn_add_new_venue
+        btnSaveVenue = view.findViewById(R.id.btn_add_new_venue);
         flUploadPhotos = view.findViewById(R.id.fl_upload_photos);
         llUploadPrompt = view.findViewById(R.id.ll_upload_prompt);
         ivVenuePreview = view.findViewById(R.id.iv_venue_preview);
         tvFragmentTitle = view.findViewById(R.id.tv_fragment_title);
     }
 
-    // 6. New method to pre-fill the form
+    // Method to pre-fill the form
     private void populateFields() {
         if (venueToEdit == null) return;
 
@@ -191,12 +190,7 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
         actVenueType.setAdapter(adapter);
     }
 
-    // 7. This method now handles BOTH adding and updating
     private void handleSaveVenue() {
-        if (!validateInput()) {
-            return; // Stop if validation fails
-        }
-
         // Get data from fields
         String name = etVenueName.getText().toString().trim();
         String location = etLocation.getText().toString().trim();
@@ -205,12 +199,10 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
         double price = Double.parseDouble(etPrice.getText().toString().trim());
         String description = etDescription.getText().toString().trim();
         String amenities = etAmenities.getText().toString().trim();
-        // selectedImageUri is already updated
 
         boolean isSuccess;
 
         if (isEditMode) {
-            // --- UPDATE ---
             // Update the Venue object with new data
             venueToEdit.setName(name);
             venueToEdit.setLocation(location);
@@ -226,7 +218,6 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
             Toast.makeText(getContext(), isSuccess ? "Venue updated successfully" : "Update failed", Toast.LENGTH_SHORT).show();
 
         } else {
-            // --- ADD ---
             isSuccess = dbHelper.addVenue(name, location, capacity, type, price, description, amenities, selectedImageUri);
             Toast.makeText(getContext(), isSuccess ? "Venue added successfully" : "Add failed", Toast.LENGTH_SHORT).show();
         }
@@ -237,12 +228,5 @@ public class AddVenueFragment extends BottomSheetDialogFragment {
             }
             dismiss(); // Close the bottom sheet
         }
-    }
-
-    // 8. Rename listener callback in your validation method
-    private boolean validateInput() {
-        // ... (all your existing validation code)
-        // No changes needed here
-        return true; // (keep your existing logic)
     }
 }

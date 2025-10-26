@@ -29,7 +29,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         btnSendResetLink = findViewById(R.id.btn_send_reset_link);
         tvBackToSignIn = findViewById(R.id.tv_back_to_sign_in);
 
-        // 1. "Send Reset Link" button click listener
+        // "Send Reset Link" button click listener
         btnSendResetLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,7 +37,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             }
         });
 
-        // 2. "Back to Sign In" text click listener
+        // "Back to Sign In" text click listener
         tvBackToSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,17 +49,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private void handleSendResetLink() {
         String email = etEmailReset.getText().toString().trim();
 
-        // Simple validation to ensure email is not empty
+        // Validation to ensure email is not empty
         if (TextUtils.isEmpty(email)) {
             etEmailReset.setError("Email is required");
             etEmailReset.requestFocus();
             return;
         }
 
-        // 3. Set the result to OK
+        // Set the result to OK
         setResult(Activity.RESULT_OK);
 
-        // 4. Finish the activity
+        // Finish the activity
         finish();
     }
 }

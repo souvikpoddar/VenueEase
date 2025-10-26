@@ -25,13 +25,13 @@ import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-// 1. This Fragment now implements all the listeners
+// This Fragment now implements all the listeners
 public class VenuesFragment extends Fragment
         implements AddVenueFragment.OnVenueDataChangedListener,
         VenueAdapter.OnVenueActionListener,
         FilterVenuesFragment.FilterListener {
 
-    // 2. All views and variables are moved here
+    // All views and variables
     private RecyclerView rvVenues;
     private VenueAdapter venueAdapter;
     private List<Venue> venueList;
@@ -61,10 +61,10 @@ public class VenuesFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 3. Initialize DB Helper (using getContext())
+        // Initialize DB Helper (using getContext())
         dbHelper = new DatabaseHelper(getContext());
 
-        // 4. Find all views using the fragment's 'view'
+        // Find all views using the fragment's 'view'
         rvVenues = view.findViewById(R.id.rv_venues);
         btnAddVenue = view.findViewById(R.id.btn_add_venue);
         searchView = view.findViewById(R.id.search_view);
@@ -72,7 +72,7 @@ public class VenuesFragment extends Fragment
         chipGroupLocations = view.findViewById(R.id.chip_group_locations);
         tvEmptyView = view.findViewById(R.id.tv_empty_view);
 
-        // 5. Setup all logic
+        // Setup all logic
         setupRecyclerView();
         setupListeners();
         loadVenuesFromDb();
@@ -80,7 +80,6 @@ public class VenuesFragment extends Fragment
 
     private void setupRecyclerView() {
         venueList = new ArrayList<>();
-        // 'this' refers to the Fragment itself, which implements the listener
         venueAdapter = new VenueAdapter(getContext(), venueList, this);
         rvVenues.setLayoutManager(new LinearLayoutManager(getContext()));
         rvVenues.setAdapter(venueAdapter);
@@ -97,8 +96,6 @@ public class VenuesFragment extends Fragment
         // Filter Button
         btnFilter.setOnClickListener(v -> {
             FilterVenuesFragment filterFragment = new FilterVenuesFragment();
-            // We need to set the target fragment for this one too
-            // so we can get the results back.
             filterFragment.setTargetFragment(VenuesFragment.this, 0);
             filterFragment.show(getParentFragmentManager(), filterFragment.getTag());
         });
@@ -114,9 +111,7 @@ public class VenuesFragment extends Fragment
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // --- THIS IS THE UPDATED LOGIC ---
-
-                // 1. Check if the new text is from a chip
+                // Check if the new text is from a chip
                 boolean isFromChip = false;
                 for (int i = 0; i < chipGroupLocations.getChildCount(); i++) {
                     Chip chip = (Chip) chipGroupLocations.getChildAt(i);
@@ -126,13 +121,12 @@ public class VenuesFragment extends Fragment
                     }
                 }
 
-                // 2. Only clear the chip check if the user is TYPING
-                // (i.e., the text is not from a chip)
+                // Only clear the chip check if the user is TYPING
                 if (!isFromChip && !newText.isEmpty()) {
                     chipGroupLocations.clearCheck();
                 }
 
-                // 3. Load results
+                // Load results
                 mCurrentQuery = newText;
                 loadVenuesFromDb();
                 return true;
@@ -171,8 +165,6 @@ public class VenuesFragment extends Fragment
             tvEmptyView.setVisibility(View.GONE);
         }
     }
-
-    // --- 6. All Listener Callback Methods are now part of the Fragment ---
 
     @Override
     public void onFiltersApplied(FilterCriteria criteria) {

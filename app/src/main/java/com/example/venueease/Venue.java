@@ -14,7 +14,6 @@ public class Venue implements Serializable {
     String amenities;
     String photoUri;
 
-    // You can create an empty constructor
     public Venue() {
     }
 
@@ -32,8 +31,7 @@ public class Venue implements Serializable {
         this.photoUri = photoUri;
     }
 
-    // --- Getters and Setters for all fields ---
-    // (You can generate these in Android Studio: Right Click -> Generate -> Getters and Setters)
+    // Getters and Setters for all fields
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

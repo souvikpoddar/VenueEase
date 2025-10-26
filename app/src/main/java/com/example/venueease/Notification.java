@@ -9,17 +9,16 @@ public class Notification implements Serializable {
     private String notificationType;
     private String title;
     private String message;
-    private int bookingId; // Optional
-    private int venueId;   // Optional
+    private int bookingId;
+    private int venueId;
     private boolean isRead;
-    private String timestamp; // Store as String (e.g., ISO 8601 or formatted)
+    private String timestamp;
 
     // Constructors
     public Notification() {
     }
 
-    // --- Getters and Setters ---
-    // (Generate these in Android Studio: Right Click -> Generate -> Getters and Setters)
+    // Getters and Setters
 
     public int getNotificationId() {
         return notificationId;

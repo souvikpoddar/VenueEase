@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText; // Use EditText for dialogs
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -151,15 +151,14 @@ public class AdminProfileFragment extends Fragment {
             String newPass = etNewPassword.getText().toString();
             String confirmPass = etConfirmNewPassword.getText().toString();
 
-            // --- GET STORED PASSWORD FROM SharedPreferences ---
-            // Provide a default value (e.g., "admin") in case it's missing the very first time
+            // GET STORED PASSWORD FROM SharedPreferences
             String storedAdminPassword = userAccountsPrefs.getString(ADMIN_EMAIL, "admin");
 
             // Validation
             if (TextUtils.isEmpty(currentPassInput)) {
                 etCurrentPassword.setError("Required"); return;
             }
-            // --- CHECK AGAINST STORED PASSWORD ---
+            // CHECK AGAINST STORED PASSWORD
             if (!currentPassInput.equals(storedAdminPassword)) {
                 etCurrentPassword.setError("Incorrect current password"); return;
             }

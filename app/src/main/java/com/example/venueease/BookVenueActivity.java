@@ -53,7 +53,7 @@ public class BookVenueActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this); // Initialize DB Helper
 
-        // 1. Setup Toolbar
+        // Setup Toolbar
         toolbar = findViewById(R.id.toolbar_book_venue);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -61,13 +61,13 @@ public class BookVenueActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // 2. Get Venue data
+        // Get Venue data
         venueToBook = (Venue) getIntent().getSerializableExtra("VENUE_TO_BOOK");
 
-        // 3. Find Views
+        // Find Views
         findViews();
 
-        // 4. Populate UI if venue exists
+        // Populate UI if venue exists
         if (venueToBook != null) {
             populateVenueInfo();
             setupDateTimePickers();
@@ -79,9 +79,8 @@ public class BookVenueActivity extends AppCompatActivity {
             return;
         }
 
-        // 5. Setup Submit Button Listener
+        // Setup Submit Button Listener
         btnSubmitBooking.setOnClickListener(v -> {
-            // TODO: Implement validation and booking submission
             handleSubmitBooking();
         });
     }
@@ -111,48 +110,47 @@ public class BookVenueActivity extends AppCompatActivity {
     }
 
     private void handleSubmitBooking() {
-        // --- 1. Validation ---
+        // Validation
         if (!validateBookingInput()) {
-            return; // Stop if validation fails
+            return;
         }
 
-        // --- 2. Get Input Data ---
+        // Get Input Data
         String startTime = actStartTime.getText().toString();
         String endTime = actEndTime.getText().toString();
         String eventType = actEventType.getText().toString();
         int guestCount = Integer.parseInt(etGuestCount.getText().toString().trim());
         String specialRequests = etSpecialRequests.getText().toString().trim();
 
-        // --- 3. Get User Data (from Session SharedPreferences) ---
+        // Get User Data (from Session SharedPreferences)
         SharedPreferences sessionPrefs = getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
         String userEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, "unknown@example.com");
 
         SharedPreferences userAccountsPrefs = getSharedPreferences(LoginActivity.USER_ACCOUNTS_PREFS, Context.MODE_PRIVATE);
         String userName = userAccountsPrefs.getString(userEmail + "_fullname", "Unknown User");
-        // We don't have user IDs yet, use 0 as a placeholder
         int userId = 0;
 
-        // --- 4. Calculate Price (Simple version: hours * price/hour) ---
+        // Calculate Price
         double totalPrice = calculateTotalPrice(startTime, endTime, venueToBook.getPrice());
         if (totalPrice < 0) {
             Toast.makeText(this, "End time must be after start time.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // --- 5. Get Current Date for 'submitted_date' ---
+        // Get Current Date for 'submitted_date'
         SimpleDateFormat submittedDateFormat = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
         String submittedDate = submittedDateFormat.format(new Date());
 
-        // --- 6. Save to Database ---
+        // Save to Database
         boolean success = dbHelper.addBooking(
                 venueToBook.getId(), userId, userName, userEmail,
                 selectedDbDate, startTime, endTime, eventType,
                 totalPrice, specialRequests, submittedDate
         );
 
-        // --- 7. Handle Result ---
+        // Handle Result
         if (success) {
-            // --- ADD NOTIFICATION FOR ADMIN ---
+            // ADD NOTIFICATION FOR ADMIN
             String adminNotifTitle = "New Booking Request \uD83D\uDCEF️"; // Bell emoji
             String adminNotifMsg = String.format(Locale.getDefault(),
                     "%s has requested to book %s for %s on %s from %s to %s. Total amount: ₹%.0f. Please review and approve/reject this request.",
@@ -163,10 +161,7 @@ public class BookVenueActivity extends AppCompatActivity {
                     startTime,
                     endTime,
                     totalPrice);
-            // Assuming you can get the last inserted booking ID, else use 0
-            // int newBookingId = dbHelper.getLastBookingId();
             dbHelper.addNotification("admin", "NEW_BOOKING", adminNotifTitle, adminNotifMsg, 0 /*newBookingId*/, venueToBook.getId());
-            // --- END NOTIFICATION ---
 
             Toast.makeText(this, "Booking request submitted successfully!", Toast.LENGTH_SHORT).show();
             setResult(Activity.RESULT_OK);
@@ -176,19 +171,17 @@ public class BookVenueActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Validates all the booking form fields.
-     */
+    // Validates all the booking form fields.
     private boolean validateBookingInput() {
         // Reset errors
         etEventDate.setError(null);
         actStartTime.setError(null);
         actEndTime.setError(null);
         actEventType.setError(null);
-        tilGuestCount.setError(null); // Use TextInputLayout for error on guest count
+        tilGuestCount.setError(null);
 
         // Get values
-        String date = etEventDate.getText().toString(); // Display date is fine for check
+        String date = etEventDate.getText().toString();
         String startTime = actStartTime.getText().toString();
         String endTime = actEndTime.getText().toString();
         String eventType = actEventType.getText().toString();
@@ -239,16 +232,10 @@ public class BookVenueActivity extends AppCompatActivity {
             etGuestCount.requestFocus();
             return false;
         }
-
-        // TODO: Add validation to ensure end time is after start time
-
         return true;
     }
 
-    /**
-     * Calculates the total price based on duration and hourly rate.
-     * Returns -1 if end time is before start time.
-     */
+    // Calculates the total price based on duration and hourly rate
     private double calculateTotalPrice(String startTime, String endTime, double hourlyRate) {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         try {
@@ -270,7 +257,7 @@ public class BookVenueActivity extends AppCompatActivity {
 
         } catch (ParseException e) {
             e.printStackTrace();
-            return 0; // Or handle error appropriately
+            return 0;
         }
     }
 
@@ -285,7 +272,7 @@ public class BookVenueActivity extends AppCompatActivity {
     }
 
     private void setupDateTimePickers() {
-        // --- Date Picker ---
+        // Date Picker
         etEventDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
@@ -299,11 +286,11 @@ public class BookVenueActivity extends AppCompatActivity {
                         Calendar selectedDateCal = Calendar.getInstance();
                         selectedDateCal.set(selectedYear, selectedMonth, selectedDayOfMonth);
 
-                        // Format for display (e.g., "26 / 10 / 2025")
+                        // Format for display
                         SimpleDateFormat displayFormat = new SimpleDateFormat("dd / MM / yyyy", Locale.getDefault());
                         String displayDate = displayFormat.format(selectedDateCal.getTime());
 
-                        // Format for database (e.g., "Sun, Oct 26, 2025") - MUST match BookingsFragment
+                        // Format for database
                         SimpleDateFormat dbFormat = new SimpleDateFormat("E, MMM d, yyyy", Locale.getDefault());
                         String dbDate = dbFormat.format(selectedDateCal.getTime());
 
@@ -320,14 +307,10 @@ public class BookVenueActivity extends AppCompatActivity {
     }
 
     private void setupTimeDropdowns() {
-        // Define time slots (e.g., hourly from 8 AM to 10 PM)
+        // Define time slots
         List<String> timeSlots = new ArrayList<>();
         for (int hour = 8; hour <= 22; hour++) {
             timeSlots.add(String.format(Locale.getDefault(), "%02d:00", hour));
-            // Optional: Add half-hour slots if needed
-            // if (hour < 22) {
-            //     timeSlots.add(String.format(Locale.getDefault(), "%02d:30", hour));
-            // }
         }
 
         ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, timeSlots);

@@ -65,7 +65,7 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 2. Initialize the launcher in onCreate
+        // Initialize the launcher in onCreate
         bookVenueLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -81,7 +81,6 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
                             snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_approved)); // Green color
                             snackbar.show();
                         }
-                        // Optionally refresh something here if needed
                     }
                 }
         );
@@ -123,7 +122,6 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
 
     private void setupRecyclerView() {
         venueList = new ArrayList<>();
-        // 'this' refers to the Fragment implementing the listener
         venueUserAdapter = new VenueUserAdapter(getContext(), venueList, this);
         rvUserVenues.setLayoutManager(new LinearLayoutManager(getContext()));
         rvUserVenues.setAdapter(venueUserAdapter);
@@ -203,8 +201,6 @@ public class UserVenuesFragment extends Fragment implements VenueUserAdapter.OnV
         mCurrentCriteria = criteria; // Save the new criteria
         loadVenuesFromDb(); // Refresh the list with the new filters
     }
-
-    // --- Adapter Action Callbacks ---
 
     @Override
     public void onViewDetailsClicked(Venue venue) {

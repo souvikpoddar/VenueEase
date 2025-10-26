@@ -81,7 +81,6 @@ public class UserBookingsFragment extends Fragment implements
         rvUserBookings.setAdapter(userBookingsAdapter);
     }
 
-    // In UserBookingsFragment.java
     private void loadUserBookings() {
         if (currentUserEmail == null) {
             tvEmptyUserBookings.setText("Error: Could not find user information.");
@@ -112,19 +111,12 @@ public class UserBookingsFragment extends Fragment implements
         }
     }
 
-    /**
-     * Callback for the "Pay Now" button click from the adapter.
-     */
     @Override
     public void onPayNowClicked(Booking booking) {
         PaymentOptionsFragment optionsFragment = PaymentOptionsFragment.newInstance(booking);
-        // Important: Show using getChildFragmentManager() so the fragment can find its parent
         optionsFragment.show(getChildFragmentManager(), "PaymentOptions");
     }
 
-    /**
-     * From PaymentOptionsFragment - User selected a payment method
-     */
     @Override
     public void onPaymentOptionSelected(String option, Booking booking) {
         switch (option) {
@@ -143,24 +135,14 @@ public class UserBookingsFragment extends Fragment implements
         }
     }
 
-    /**
-     * From PaymentOptionsFragment - User closed the dialog
-     */
     @Override
     public void onPaymentCancelled() {
-        // Optional: Show a message or do nothing
         Toast.makeText(getContext(), "Payment cancelled", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * From specific payment fragments - User clicked "Pay"
-     * We centralize the processing logic here.
-     */
     private void handlePaymentAttempt(Booking booking, String paymentMethodDetails, String paymentMethod) {
-        // Generate a dummy Payment ID
         String paymentId = "PAY_" + System.currentTimeMillis() + "_" + paymentMethod;
 
-        // Show the processing dialog
         ProcessingPaymentFragment processingFragment = ProcessingPaymentFragment.newInstance(booking, paymentId);
         processingFragment.show(getChildFragmentManager(), "ProcessingPayment");
     }
@@ -180,34 +162,24 @@ public class UserBookingsFragment extends Fragment implements
         handlePaymentAttempt(booking, "Bank: " + selectedBank, paymentMethod);
     }
 
-    /**
-     * From payment fragments - User clicked "Back"
-     */
     @Override
     public void onPaymentMethodBackPressed() {
-        // Re-show the payment options dialog
-        // Need the booking object again, might need to store it temporarily
-        // For simplicity, we can just show a toast for now
         Toast.makeText(getContext(), "Back pressed", Toast.LENGTH_SHORT).show();
-        // Ideally, re-fetch the booking associated with the back press
-        // and show PaymentOptionsFragment.newInstance(booking)
+
     }
 
-    /**
-     * From ProcessingPaymentFragment - Dummy processing finished
-     */
     @Override
     public void onPaymentSuccess(Booking booking, String paymentId) {
-        // 1. Update booking status in Database to "Confirmed"
+        // Update booking status in Database to "Confirmed"
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_CONFIRMED);
 
         if (success) {
-            // --- ADD NOTIFICATIONS (ADMIN + USER) ---
+            // ADD NOTIFICATIONS (ADMIN + USER)
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String paymentDate = sdf.format(new Date());
 
             // Admin Notification
-            String adminNotifTitle = "Payment Received \uD83D\uDCB8"; // Money emoji
+            String adminNotifTitle = "Payment Received \uD83D\uDCB8";
             String adminNotifMsg = String.format(Locale.getDefault(),
                     "Payment of ₹%.0f received from %s for %s booking on %s. The booking is now confirmed.",
                     booking.getTotalPrice(),
@@ -224,43 +196,31 @@ public class UserBookingsFragment extends Fragment implements
                     booking.getEventDate(),
                     paymentId);
             dbHelper.addNotification(booking.getUserEmail(), "PAYMENT_SUCCESSFUL", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
-            // --- END NOTIFICATIONS ---
+            // END NOTIFICATIONS
 
-            // 2. Show the Success Dialog
+            // Show the Success Dialog
             PaymentSuccessFragment successFragment = PaymentSuccessFragment.newInstance(booking, paymentId);
             successFragment.show(getChildFragmentManager(), "PaymentSuccess");
 
-            // 3. Refresh the list in the background
+            // Refresh the list in the background
             loadUserBookings();
 
         } else {
             Toast.makeText(getContext(), "Error confirming booking status.", Toast.LENGTH_SHORT).show();
-            // Optionally show an error dialog
         }
     }
 
-    /**
-     * From PaymentSuccessFragment - User clicked "Rate Venue"
-     */
     @Override
     public void onRateVenueClicked(Booking booking) {
         RatingDialogFragment ratingDialog = RatingDialogFragment.newInstance(booking);
         ratingDialog.show(getChildFragmentManager(), "RatingDialog");
     }
 
-    /**
-     * From PaymentSuccessFragment - User closed the success dialog
-     */
     @Override
     public void onPaymentSuccessClosed() {
-        // List should already be refreshed by onPaymentSuccess
-        // We might not need this callback if onDismiss in success fragment handles it
-        loadUserBookings(); // Refresh just in case
+        loadUserBookings();
     }
 
-    /**
-     * From RatingDialogFragment - User submitted a rating
-     */
     @Override
     public void onRatingSubmitted(Booking booking, float rating, String comment) {
         // Get current date
@@ -271,13 +231,13 @@ public class UserBookingsFragment extends Fragment implements
         boolean success = dbHelper.addRating(
                 booking.getVenueId(),
                 booking.getBookingId(),
-                booking.getUserId(), // Assuming user ID is stored correctly
+                booking.getUserId(),
                 rating,
                 comment,
                 date);
 
         if (success) {
-            // --- ADD NOTIFICATION FOR ADMIN ---
+            // ADD NOTIFICATION FOR ADMIN
             String adminNotifTitle = "New Rating Submitted ⭐";
             String adminNotifMsg = String.format(Locale.getDefault(),
                     "%s submitted a %.1f star rating for %s (Booking #%d). Comment: %s",
@@ -287,21 +247,15 @@ public class UserBookingsFragment extends Fragment implements
                     booking.getBookingId(),
                     comment.isEmpty() ? "No comment" : comment);
             dbHelper.addNotification("admin", "RATING_SUBMITTED", adminNotifTitle, adminNotifMsg, booking.getBookingId(), booking.getVenueId());
-            // --- END NOTIFICATION ---
 
             Toast.makeText(getContext(), "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Failed to submit rating.", Toast.LENGTH_SHORT).show();
         }
-        // No need to refresh booking list here unless rating affects it directly
     }
 
-    /**
-     * From RatingDialogFragment - User clicked "Skip"
-     */
     @Override
     public void onRatingSkipped(Booking booking) {
-        // Do nothing or show a simple message
         Toast.makeText(getContext(), "Rating skipped.", Toast.LENGTH_SHORT).show();
     }
 }

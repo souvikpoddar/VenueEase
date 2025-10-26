@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText; // Use EditText for dialogs
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +56,7 @@ public class UserProfileFragment extends Fragment {
         Context context = getContext();
         if (context == null) {
             Log.e("UserProfileFragment", "Context is null in onViewCreated.");
-            return; // Exit if context is not available
+            return;
         }
 
         sessionPrefs = context.getSharedPreferences(LoginActivity.SESSION_PREFS_NAME, Context.MODE_PRIVATE);
@@ -85,9 +85,8 @@ public class UserProfileFragment extends Fragment {
         currentUserEmail = sessionPrefs.getString(LoginActivity.KEY_EMAIL, null);
 
         if (currentUserEmail == null) {
-            // Handle error - user should be logged in to see this screen
             Toast.makeText(getContext(), "Error: User session not found.", Toast.LENGTH_SHORT).show();
-            logoutUser(); // Log out if session is invalid
+            logoutUser();
             return;
         }
 
@@ -102,7 +101,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void showEditProfileDialog() {
-        if (currentUserEmail == null) return; // Should not happen
+        if (currentUserEmail == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -140,15 +139,11 @@ public class UserProfileFragment extends Fragment {
                     etEditEmail.setError("Cannot use admin email address."); return;
                 }
                 // Check if it belongs to another user
-                // Note: Since we only store email->password, we can't easily distinguish
-                //       if the existing entry belongs to the *current* user if they haven't changed email yet.
-                //       A safer approach is needed if multiple accounts with same email but different cases were possible.
-                //       For this simple SharedPreferences setup, we allow changing email only if the new email doesn't exist at all.
                 etEditEmail.setError("Email already registered by another user."); return;
 
             }
 
-            // --- SAVE CHANGES TO SharedPreferences ---
+            // SAVE CHANGES TO SharedPreferences
             SharedPreferences.Editor editor = userAccountsPrefs.edit();
 
             // If email changed, we need to update all related keys
@@ -169,7 +164,6 @@ public class UserProfileFragment extends Fragment {
                 editor.putString(currentUserEmail + "_fullname", newName);
             }
             editor.apply();
-            // --- END SAVE ---
 
             currentUserName = newName; // Update local variable
 
@@ -183,7 +177,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void showChangePasswordDialog() {
-        if (currentUserEmail == null) return; // Should not happen
+        if (currentUserEmail == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -218,11 +212,10 @@ public class UserProfileFragment extends Fragment {
             if (TextUtils.isEmpty(confirmPass)) { /*...*/ return; }
             if (!newPass.equals(confirmPass)) { /*...*/ return; }
 
-            // --- SAVE NEW PASSWORD to SharedPreferences ---
+            // SAVE NEW PASSWORD to SharedPreferences
             SharedPreferences.Editor editor = userAccountsPrefs.edit();
             editor.putString(currentUserEmail, newPass); // Overwrite old password
             editor.apply();
-            // --- END SAVE ---
 
             Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
             dialog.dismiss();

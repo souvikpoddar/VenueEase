@@ -21,7 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Hardcoded Admin Credentials
+    // Admin Credentials
     private static final String ADMIN_EMAIL = "admin@venueease.com";
     private static final String ADMIN_PASSWORD = "admin";
 
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
         initializeAdminCredentials();
 
-        // 1. CHECK IF ALREADY LOGGED IN
+        // CHECK IF ALREADY LOGGED IN
         checkLoginStatus();
 
         setContentView(R.layout.activity_login);
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
         tvSignUp = findViewById(R.id.tv_sign_up);
 
-        // 2. SIGN IN BUTTON CLICK LISTENER
+        // SIGN IN BUTTON CLICK LISTENER
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,9 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Checks session status and navigates to the correct dashboard based on role.
-     */
+    // Checks session status and navigates to the correct dashboard based on role.
     private void checkLoginStatus() {
         if (sessionPrefs.getBoolean(KEY_IS_LOGGED_IN, false)) {
             // User is logged in, check their role
@@ -130,9 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Handles login logic for both Admin and registered Users.
-     */
+    // Handles login logic for both Admin and registered Users.
     private void handleLogin() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
@@ -140,10 +136,10 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(email)) {  return; }
         if (TextUtils.isEmpty(password)) { return; }
 
-        // --- 1. Check for ADMIN ---
+        // Check for ADMIN
         if (email.equals(ADMIN_EMAIL)) {
             // Fetch the stored admin password
-            String storedAdminPassword = userAccountsPrefs.getString(ADMIN_EMAIL, ADMIN_PASSWORD); // Default to original if somehow missing
+            String storedAdminPassword = userAccountsPrefs.getString(ADMIN_EMAIL, ADMIN_PASSWORD);
 
             if (password.equals(storedAdminPassword)) {
                 // Admin login successful
@@ -157,9 +153,8 @@ public class LoginActivity extends AppCompatActivity {
             return; // Stop here if it was the admin email
         }
 
-        // --- 2. Check for USER (No changes needed here) ---
+        // Check for USER
         if (userAccountsPrefs.contains(email)) {
-            // ... (existing user password check logic) ...
             String savedPassword = userAccountsPrefs.getString(email, null);
             if (password.equals(savedPassword)) {
                 saveSession("user", email);
@@ -174,9 +169,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Saves the current user's session details
-     */
+    // Saves the current user's session details
     private void saveSession(String role, String email) {
         SharedPreferences.Editor editor = sessionPrefs.edit();
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
@@ -193,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToUserDashboard() {
-        // You need to create this Activity
         Intent intent = new Intent(LoginActivity.this, UserDashboardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

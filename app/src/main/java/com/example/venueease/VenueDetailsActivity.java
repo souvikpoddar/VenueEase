@@ -49,39 +49,35 @@ public class VenueDetailsActivity extends AppCompatActivity {
         bookVenueLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // When returning from BookVenueActivity, just finish this details activity too
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         finish(); // Close VenueDetailsActivity after successful booking
                     }
-                    // If RESULT_CANCELED, just stay on the details page
                 }
         );
 
-        // 1. Setup Toolbar
+        // Setup Toolbar
         toolbar = findViewById(R.id.toolbar_venue_details);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Show back arrow
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // 2. Get the Venue object from the Intent
+        // Get the Venue object from the Intent
         currentVenue = (Venue) getIntent().getSerializableExtra("VENUE_DATA");
 
-        // 3. Find Views
         findViews();
 
-        // 4. Populate UI if venue data exists
+        // Populate UI if venue data exists
         if (currentVenue != null) {
             populateUi();
             loadAndDisplayRating();
         } else {
-            // Handle error: Venue data not received
             Toast.makeText(this, "Error: Venue details not found.", Toast.LENGTH_LONG).show();
             finish(); // Close the activity if data is missing
         }
 
-        // 5. Setup Book Button Listener
+        // Setup Book Button Listener
         btnBookThisVenue.setOnClickListener(v -> {
             // Create an Intent to start BookVenueActivity
             Intent intent = new Intent(VenueDetailsActivity.this, BookVenueActivity.class);
@@ -103,14 +99,14 @@ public class VenueDetailsActivity extends AppCompatActivity {
         tvDetailVenuePrice = findViewById(R.id.tv_detail_venue_price);
         tvDetailDescription = findViewById(R.id.tv_detail_description);
         llDetailAmenitiesContainer = findViewById(R.id.ll_detail_amenities_container);
-        tvRatingValue = findViewById(R.id.tv_rating_value); // Dummy
-        tvRatingCount = findViewById(R.id.tv_rating_count); // Dummy
+        tvRatingValue = findViewById(R.id.tv_rating_value);
+        tvRatingCount = findViewById(R.id.tv_rating_count);
         btnBookThisVenue = findViewById(R.id.btn_book_this_venue);
     }
 
     private void populateUi() {
         // Set basic details
-        getSupportActionBar().setTitle(currentVenue.getName()); // Set toolbar title too
+        getSupportActionBar().setTitle(currentVenue.getName());
         tvDetailVenueName.setText(currentVenue.getName());
         tvDetailVenueLocation.setText(currentVenue.getLocation());
         tvDetailTagType.setText(currentVenue.getType());
@@ -137,7 +133,7 @@ public class VenueDetailsActivity extends AppCompatActivity {
         int ratingCount = dbHelper.getRatingCount(currentVenue.getId());
 
         if (ratingCount > 0) {
-            tvRatingValue.setText(String.format(Locale.getDefault(), "%.1f", averageRating)); // Format to 1 decimal place
+            tvRatingValue.setText(String.format(Locale.getDefault(), "%.1f", averageRating));
             tvRatingCount.setText(String.format(Locale.getDefault(), "Based on %d review%s", ratingCount, ratingCount == 1 ? "" : "s"));
         } else {
             tvRatingValue.setText("N/A");
@@ -146,10 +142,9 @@ public class VenueDetailsActivity extends AppCompatActivity {
     }
 
     private void addAmenitiesToList(String amenitiesString) {
-        llDetailAmenitiesContainer.removeAllViews(); // Clear previous views if any
+        llDetailAmenitiesContainer.removeAllViews();
 
         if (amenitiesString == null || amenitiesString.isEmpty()) {
-            // Optionally add a "No amenities listed" TextView
             return;
         }
 
@@ -159,15 +154,12 @@ public class VenueDetailsActivity extends AppCompatActivity {
             if (!trimmedAmenity.isEmpty()) {
                 TextView amenityView = new TextView(this);
                 amenityView.setText(trimmedAmenity);
-                amenityView.setTextSize(16); // Set text size (e.g., 16sp)
+                amenityView.setTextSize(16);
 
                 // Set the green check drawable
                 amenityView.setCompoundDrawablesWithIntrinsicBounds(
                         ContextCompat.getDrawable(this, R.drawable.ic_check_green),
                         null, null, null);
-
-                // Set drawable color (optional, if your vector isn't green)
-                // amenityView.getCompoundDrawables()[0].setTint(ContextCompat.getColor(this, R.color.text_color_approved));
 
                 amenityView.setCompoundDrawablePadding(16); // 16dp padding
 

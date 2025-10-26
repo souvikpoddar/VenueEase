@@ -107,7 +107,7 @@ public class CardPaymentFragment extends BottomSheetDialogFragment {
     }
 
     private void handlePayment() {
-        // Simple Validation
+        // Validation
         String cardName = etCardName.getText().toString().trim();
         String cardNumber = etCardNumber.getText().toString().trim();
         String expiry = etExpiry.getText().toString().trim();
@@ -117,8 +117,8 @@ public class CardPaymentFragment extends BottomSheetDialogFragment {
         tilExpiry.setError(null); tilCvv.setError(null);
 
         if (TextUtils.isEmpty(cardName)) { tilCardName.setError("Required"); etCardName.requestFocus(); return; }
-        if (TextUtils.isEmpty(cardNumber) || cardNumber.length() < 12) { tilCardNumber.setError("Invalid Card Number"); etCardNumber.requestFocus(); return; } // Basic check
-        if (TextUtils.isEmpty(expiry) || !expiry.matches("\\d{2}/\\d{2}")) { tilExpiry.setError("Invalid (MM/YY)"); etExpiry.requestFocus(); return; } // Basic format check
+        if (TextUtils.isEmpty(cardNumber) || cardNumber.length() < 12) { tilCardNumber.setError("Invalid Card Number"); etCardNumber.requestFocus(); return; }
+        if (TextUtils.isEmpty(expiry) || !expiry.matches("\\d{2}/\\d{2}")) { tilExpiry.setError("Invalid (MM/YY)"); etExpiry.requestFocus(); return; }
         if (TextUtils.isEmpty(cvv) || cvv.length() != 3) { tilCvv.setError("Invalid CVV"); etCvv.requestFocus(); return; }
 
         // Notify listener

@@ -103,18 +103,15 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         chipGroupStatus.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-                // The checkedIds parameter is a List, not an int.
-                // Since we are in singleSelection mode, we just need the first item.
 
                 if (checkedIds.isEmpty()) {
-                    // This shouldn't happen if selectionRequired=true, but good to check.
                     return;
                 }
 
-                // 1. Get the single selected ID from the list
+                // Get the single selected ID from the list
                 int selectedChipId = checkedIds.get(0);
 
-                // 2. Now, compare the int ID
+                // Compare the int ID
                 if (selectedChipId == R.id.chip_pending) {
                     mCurrentStatusFilter = BookingsAdapter.STATUS_PENDING;
                 } else if (selectedChipId == R.id.chip_approved) {
@@ -183,29 +180,24 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
                 (datePicker, y, m, d) -> {
-                    // --- THIS IS THE UPDATED LOGIC ---
-
-                    // 1. Create a Calendar object for the selected date
+                    // Create a Calendar object for the selected date
                     Calendar selectedCalendar = Calendar.getInstance();
                     selectedCalendar.set(y, m, d);
 
-                    // 2. Format the date for the UI ("26 / 10 / 2025")
+                    // Format the date for the UI ("26 / 10 / 2025")
                     String uiDateString = String.format(Locale.getDefault(), "%02d / %02d / %04d", d, m + 1, y);
 
-                    // 3. Format the date for the DB query ("Sun, Oct 26, 2025")
-                    // This MUST match the format in your addTestData() method
+                    // Format the date for the DB query
                     SimpleDateFormat dbFormat = new SimpleDateFormat("E, MMM d, yyyy", Locale.getDefault());
                     String dbDateString = dbFormat.format(selectedCalendar.getTime());
 
-                    // 4. Set the UI text and the filter value
+                    // Set the UI text and the filter value
                     tvFilterDateValue.setText(uiDateString);
                     tvFilterDateValue.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
 
                     mCurrentDateFilter = dbDateString; // Set the filter to the DB format
 
                     loadBookings(); // Refresh the list
-
-                    // --- END OF UPDATED LOGIC ---
                 },
                 year, month, day
         );
@@ -223,9 +215,7 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         datePickerDialog.show();
     }
 
-    /**
-     * Clears the date filter and reloads the bookings.
-     */
+    // Clears the date filter and reloads the bookings
     private void clearDateFilter() {
         mCurrentDateFilter = null; // Clear the filter state
         tvFilterDateValue.setText("dd / mm / yyyy"); // Reset the label
@@ -233,39 +223,34 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
         loadBookings(); // Refresh the list
     }
 
-    // --- Adapter Action Callbacks ---
-
     @Override
     public void onApprove(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_APPROVED);
         if (success) {
-            // --- ADD NOTIFICATION FOR USER ---
+            // ADD NOTIFICATION FOR USER
             String userNotifTitle = "Booking Approved! ✅";
             String userNotifMsg = String.format(Locale.getDefault(),
                     "Great news! Your booking for %s on %s has been approved by the admin. You can now proceed with online payment to confirm your booking. Multiple payment options are available including UPI, Credit/Debit Card, and Net Banking.",
                     booking.getVenue().getName(), // Assuming venue details are loaded
                     booking.getEventDate());
             dbHelper.addNotification(booking.getUserEmail(), "BOOKING_APPROVED", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
-            // --- END NOTIFICATION ---
-            // --- New Snackbar Logic ---
 
-            // 1. Get the BottomNavigationView from the activity to use as an anchor
+            // Snackbar
+            // Get the BottomNavigationView from the activity to use as an anchor
             View anchorView = getActivity().findViewById(R.id.bottom_navigation);
 
-            // 2. Create the dynamic message
+            // Create the dynamic message
             String message = String.format("%s's booking for %s has been approved.",
                     booking.getUserName(),
                     booking.getVenue().getName());
 
-            // 3. Create and customize the Snackbar
+            // Create and customize the Snackbar
             Snackbar snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_LONG);
-            snackbar.setAnchorView(anchorView); // This makes it appear ABOVE the nav bar
+            snackbar.setAnchorView(anchorView);
 
             // Set the green "Approved" color
             snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_approved));
             snackbar.show();
-
-            // --- End of New Logic ---
 
             // Refresh the UI
             loadBookings();
@@ -279,35 +264,29 @@ public class BookingsFragment extends Fragment implements BookingsAdapter.OnBook
     public void onReject(Booking booking) {
         boolean success = dbHelper.updateBookingStatus(booking.getBookingId(), BookingsAdapter.STATUS_REJECTED);
         if (success) {
-            // --- ADD NOTIFICATION FOR USER ---
+            // ADD NOTIFICATION FOR USER
             String userNotifTitle = "Booking Rejected ❌";
             String userNotifMsg = String.format(Locale.getDefault(),
                     "Unfortunately, your booking request for %s on %s has been rejected by the admin. Please contact support or try booking another venue/date.",
                     booking.getVenue().getName(),
                     booking.getEventDate());
             dbHelper.addNotification(booking.getUserEmail(), "BOOKING_REJECTED", userNotifTitle, userNotifMsg, booking.getBookingId(), booking.getVenueId());
-            // --- END NOTIFICATION ---
-            // --- New Snackbar Logic ---
 
-            // 1. Get the anchor view
+            // --- Snackbar
+
+            // Get the anchor view
             View anchorView = getActivity().findViewById(R.id.bottom_navigation);
 
-            // 2. Create the dynamic message
+            // Create the dynamic message
             String message = String.format("%s's booking request for %s has been rejected.",
                     booking.getUserName(),
                     booking.getVenue().getName());
 
-            // 3. Create and customize the Snackbar
+            // Create and customize the Snackbar
             Snackbar snackbar = Snackbar.make(anchorView, message, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(anchorView);
 
-            // We'll use the default dark color for "Rejected" as shown in your screenshot
-            // (If you wanted it red, you could add:
-            // snackbar.setBackgroundTint(ContextCompat.getColor(getContext(), R.color.text_color_rejected));
-
             snackbar.show();
-
-            // --- End of New Logic ---
 
             // Refresh the UI
             loadBookings();

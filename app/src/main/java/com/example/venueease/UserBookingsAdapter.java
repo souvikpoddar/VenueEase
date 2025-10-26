@@ -61,9 +61,7 @@ public class UserBookingsAdapter extends RecyclerView.Adapter<UserBookingsAdapte
         notifyDataSetChanged();
     }
 
-    /**
-     * ViewHolder Class
-     */
+    // ViewHolder Class
     class UserBookingViewHolder extends RecyclerView.ViewHolder {
 
         // Declare UI elements
@@ -122,8 +120,8 @@ public class UserBookingsAdapter extends RecyclerView.Adapter<UserBookingsAdapte
             boolean showActionArea = false;
             boolean showPayButton = false;
             String actionTitle = "", actionSubtitle = "";
-            int actionIconRes = R.drawable.ic_info; // Default icon
-            int actionIconTint = R.color.text_color_confirmed; // Default tint
+            int actionIconRes = R.drawable.ic_info;
+            int actionIconTint = R.color.text_color_confirmed;
 
             switch (status) {
                 case BookingsAdapter.STATUS_PENDING:
@@ -136,7 +134,7 @@ public class UserBookingsAdapter extends RecyclerView.Adapter<UserBookingsAdapte
                 case BookingsAdapter.STATUS_APPROVED:
                     statusText = "Approved - Payment Pending";
                     statusBgRes = R.drawable.tag_background_approved;
-                    statusIconRes = R.drawable.ic_check_circle; // Use approved icon
+                    statusIconRes = R.drawable.ic_check_circle;
                     statusTextColor = R.color.text_color_approved;
                     showActionArea = true;
                     showPayButton = true;
@@ -157,9 +155,9 @@ public class UserBookingsAdapter extends RecyclerView.Adapter<UserBookingsAdapte
                     statusBgRes = R.drawable.tag_background_confirmed;
                     statusIconRes = R.drawable.ic_confirmed;
                     statusTextColor = R.color.text_color_confirmed;
-                    footerText = "Booking confirmed on " + booking.getSubmittedDate(); // Placeholder date
+                    footerText = "Booking confirmed on " + booking.getSubmittedDate();
                     break;
-                default: // Should not happen
+                default:
                     statusText = status;
                     statusBgRes = R.drawable.tag_background;
                     statusIconRes = R.drawable.ic_info;

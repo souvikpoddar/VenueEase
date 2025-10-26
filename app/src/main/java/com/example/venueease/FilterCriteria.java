@@ -1,7 +1,6 @@
 package com.example.venueease;
 
 public class FilterCriteria {
-    // We use -1 and -1.0 to represent "Any" or "Not Set"
     public static final int ANY_CAPACITY = -1;
     public static final double ANY_PRICE = -1.0;
 
